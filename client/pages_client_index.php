@@ -2,22 +2,22 @@
 session_start();
 include('../conf/config.php'); //get configuration file
 if (isset($_POST['login'])) {
-  $email = $_POST['email'];
-  $password = sha1(md5($_POST['password'])); //double encrypt to increase security
-  $stmt = $mysqli->prepare("SELECT email, password, client_id  FROM iB_clients   WHERE email=? AND password=?"); //sql to log in user
-  $stmt->bind_param('ss', $email, $password); //bind fetched parameters
-  $stmt->execute(); //execute bind
-  $stmt->bind_result($email, $password, $client_id); //bind result
-  $rs = $stmt->fetch();
-  $_SESSION['client_id'] = $client_id; //assaign session toc lient id
-  //$uip=$_SERVER['REMOTE_ADDR'];
-  //$ldate=date('d/m/Y h:i:s', time());
-  if ($rs) { //if its sucessfull
-    header("location:pages_dashboard.php");
-  } else {
-    #echo "<script>alert('Access Denied Please Check Your Credentials');</script>";
-    $err = "Access Denied Please Check Your Credentials";
-  }
+  // $email = $_POST['email'];
+  // $password = sha1(md5($_POST['password'])); //double encrypt to increase security
+  // $stmt = $mysqli->prepare("SELECT email, password, client_id  FROM iB_clients   WHERE email=? AND password=?"); //sql to log in user
+  // $stmt->bind_param('ss', $email, $password); //bind fetched parameters
+  // $stmt->execute(); //execute bind
+  // $stmt->bind_result($email, $password, $client_id); //bind result
+  // $rs = $stmt->fetch();
+  // $_SESSION['client_id'] = $client_id; //assaign session toc lient id
+  // //$uip=$_SERVER['REMOTE_ADDR'];
+  // //$ldate=date('d/m/Y h:i:s', time());
+  // if ($rs) { //if its sucessfull
+  //   header("location:pages_dashboard.php");
+  // } else {
+  //   #echo "<script>alert('Access Denied Please Check Your Credentials');</script>";
+  //   $err = "Access Denied Please Check Your Credentials";
+  // }
 }
 /* Persisit System Settings On Brand */
 $ret = "SELECT * FROM `iB_SystemSettings` ";
