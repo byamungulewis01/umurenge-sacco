@@ -17,7 +17,7 @@ if (isset($_POST['open_account'])) {
 
     try {
         //Insert Captured information to a database table
-        $query = "INSERT INTO iB_bankAccounts (acc_name, account_number, acc_type, acc_status, acc_amount, client_id,sacco_id) VALUES (?,?,?,?,?,?,?)";
+        $query = "INSERT INTO bankaccounts (acc_name, account_number, acc_type, acc_status, acc_amount, client_id,sacco_id) VALUES (?,?,?,?,?,?,?)";
         $stmt = $mysqli->prepare($query);
         //bind paramaters
         $stmt->execute([$acc_name, $account_number, $acc_type, $acc_status, $acc_amount, $client_id, $sacco]);
@@ -52,7 +52,7 @@ if (isset($_POST['open_account'])) {
         <!-- Content Wrapper. Contains page content -->
         <?php
         $client_id = $_GET['client_id'];
-        $ret = "SELECT * FROM  iB_clients WHERE client_id = ? ";
+        $ret = "SELECT * FROM  clients WHERE client_id = ? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $client_id);
         $stmt->execute(); //ok
@@ -143,7 +143,7 @@ if (isset($_POST['open_account'])) {
 
 
                                                     <?php
-                                                    $ret1 = "SELECT * FROM  iB_sacco";
+                                                    $ret1 = "SELECT * FROM  sacco";
                                                     $stmt1 = $mysqli->prepare($ret1);
                                                     $stmt1->execute(); //ok
                                                     $res1 = $stmt1->get_result();
@@ -173,8 +173,8 @@ if (isset($_POST['open_account'])) {
                                                         name="acc_type">
                                                         <option disabled selected>Select Any Account types</option>
                                                         <?php
-                                                        //fetch all iB_Acc_types
-                                                        $ret = "SELECT * FROM  iB_Acc_types ORDER BY name ASC";
+                                                        //fetch all acc_types
+                                                        $ret = "SELECT * FROM  acc_types ORDER BY name ASC";
                                                         $stmt = $mysqli->prepare($ret);
                                                         $stmt->execute(); //ok
                                                         $res = $stmt->get_result();

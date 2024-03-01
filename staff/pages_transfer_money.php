@@ -4,7 +4,7 @@ include('../conf/config.php');
 include('conf/checklogin.php');
 check_login();
 $staff_id = $_SESSION['staff_id'];
-$ret = "SELECT * FROM ib_staff where staff_id = ?";
+$ret = "SELECT * FROM staff where staff_id = ?";
 $stmt = $mysqli->prepare($ret);
 $stmt->execute([$staff_id]); //ok
 $res = $stmt->get_result();
@@ -28,7 +28,7 @@ if (isset($_POST['deposit'])) {
             *You cant transfer money from an bank account that has no money in it so
             *Lets Handle that here.
             */
-    $result = "SELECT SUM(transaction_amt) FROM  iB_Transactions  WHERE account_id=?";
+    $result = "SELECT SUM(transaction_amt) FROM  transactions  WHERE account_id=?";
     $stmt = $mysqli->prepare($result);
     $stmt->bind_param('i', $account_id);
     $stmt->execute();
@@ -45,7 +45,7 @@ if (isset($_POST['deposit'])) {
 
 
         //Insert Captured information to a database table
-        $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, transaction_amt, receiving_acc_id,sacco_id,client_id) VALUES (?,?,?,?,?,?,?,?)";
+        $query = "INSERT INTO transactions (tr_code, account_id, tr_type, tr_status, transaction_amt, receiving_acc_id,sacco_id,client_id) VALUES (?,?,?,?,?,?,?,?)";
 
         $stmt = $mysqli->prepare($query);
 
@@ -84,7 +84,7 @@ if (isset($_POST['deposit'])) {
         <!-- Content Wrapper. Contains page content -->
         <?php
         $account_id = $_GET['account_id'];
-        $ret = "SELECT * FROM  iB_bankAccounts WHERE account_id = ? ";
+        $ret = "SELECT * FROM  bankaccounts WHERE account_id = ? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $account_id);
         $stmt->execute(); //ok
@@ -92,7 +92,7 @@ if (isset($_POST['deposit'])) {
         $cnt = 1;
         while ($row = $res->fetch_object()) {
 
-            $stmt2 = $mysqli->prepare("SELECT * FROM  ib_acc_types WHERE acctype_id = $row->acc_type");
+            $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
             $stmt2->execute(); //ok
             $res2 = $stmt2->get_result();
             while ($data = $res2->fetch_object()) {
@@ -100,7 +100,7 @@ if (isset($_POST['deposit'])) {
                 $acc_type = $data->name;
             }
 
-            $stmt3 = $mysqli->prepare("SELECT * FROM  ib_clients WHERE client_id = $row->client_id");
+            $stmt3 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
             $stmt3->execute(); //ok
             $res3 = $stmt3->get_result();
             while ($data3 = $res3->fetch_object()) {
@@ -200,7 +200,7 @@ if (isset($_POST['deposit'])) {
                                                         <option>Select Receiving Account</option>
                                                         <?php
                                                         //fetch all iB_Accs
-                                                        $ret = "SELECT * FROM  iB_bankAccounts WHERE account_number != ?";
+                                                        $ret = "SELECT * FROM  bankaccounts WHERE account_number != ?";
                                                         $stmt = $mysqli->prepare($ret);
                                                         $stmt->execute([$row->account_number]); //ok
                                                         $res = $stmt->get_result();

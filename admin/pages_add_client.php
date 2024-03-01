@@ -21,7 +21,7 @@ if (isset($_POST['create_staff_account'])) {
 
     try {
         //Insert Captured information to a database table
-        $query = "INSERT INTO iB_clients (name, national_id, client_number, phone, email, password, profile_pic,sacco_id) VALUES (?,?,?,?,?,?,?,?)";
+        $query = "INSERT INTO clients (name, national_id, client_number, phone, email, password, profile_pic,sacco_id) VALUES (?,?,?,?,?,?,?,?)";
         $stmt = $mysqli->prepare($query);
         //bind paramaters
         $rc = $stmt->bind_param('ssssssss', $name, $national_id, $client_number, $phone, $email, $password, $profile_pic, $sacco_id);
@@ -107,7 +107,7 @@ if (isset($_POST['create_staff_account'])) {
                                             <div class="col-md-6 form-group">
                                                 <label for="exampleInputPassword1">Sacco</label>
                                                 <?php
-                                                $ret = "SELECT * FROM  iB_sacco";
+                                                $ret = "SELECT * FROM  sacco";
                                                 $stmt = $mysqli->prepare($ret);
                                                 $stmt->execute(); //ok
                                                 $res = $stmt->get_result();
@@ -152,7 +152,7 @@ if (isset($_POST['create_staff_account'])) {
                                                 <label for="exampleInputPassword1">Client Number</label>
                                                 <?php
                                                 //PHP function to generate random passenger number
-                                                $stmt = $DB_con->prepare("SELECT * FROM  ib_clients");
+                                                $stmt = $DB_con->prepare("SELECT * FROM  clients");
                                                 $stmt->execute();
                                                 $row = $stmt->rowCount();
                                                 $strleft = str_pad($row + 1, 3, '0', STR_PAD_LEFT);

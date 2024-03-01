@@ -17,7 +17,7 @@ if (isset($_POST['update_client_account'])) {
     move_uploaded_file($_FILES["profile_pic"]["tmp_name"], "../admin/dist/img/" . $_FILES["profile_pic"]["name"]);
 
     //Insert Captured information to a database table
-    $query = "UPDATE  iB_clients SET name=?, national_id=?, phone=?, email=?, profile_pic=? WHERE client_id = ?";
+    $query = "UPDATE  clients SET name=?, national_id=?, phone=?, email=?, profile_pic=? WHERE client_id = ?";
     $stmt = $mysqli->prepare($query);
     //bind paramaters
     $rc = $stmt->bind_param('ssssss', $name, $national_id, $phone, $email, $profile_pic, $client_id);
@@ -35,7 +35,7 @@ if (isset($_POST['change_client_password'])) {
     $password = sha1(md5($_POST['password']));
     $client_number = $_GET['client_number'];
     //insert unto certain table in database
-    $query = "UPDATE iB_clients  SET password=? WHERE  client_number=?";
+    $query = "UPDATE clients  SET password=? WHERE  client_number=?";
     $stmt = $mysqli->prepare($query);
     //bind paramaters
     $rc = $stmt->bind_param('ss', $password, $client_number);
@@ -70,7 +70,7 @@ if (isset($_POST['change_client_password'])) {
             <!-- Content Header with logged in user details (Page header) -->
             <?php
             $client_id = $_SESSION['client_id'];
-            $ret = "SELECT * FROM  iB_clients  WHERE client_id = ? ";
+            $ret = "SELECT * FROM  clients  WHERE client_id = ? ";
             $stmt = $mysqli->prepare($ret);
             $stmt->bind_param('s', $client_id);
             $stmt->execute(); //ok
@@ -182,7 +182,7 @@ if (isset($_POST['change_client_password'])) {
                                                             class="col-sm-2 col-form-label">Sacco</label>
                                                         <div class="col-sm-10">
                                                             <?php
-                                                            $ret1 = "SELECT * FROM  iB_sacco WHERE id = ?";
+                                                            $ret1 = "SELECT * FROM  sacco WHERE id = ?";
                                                             $stmt1 = $mysqli->prepare($ret1);
                                                             $stmt1->execute([$row->sacco_id]); //ok
                                                             $res1 = $stmt1->get_result();

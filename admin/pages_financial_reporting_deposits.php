@@ -66,7 +66,7 @@ $admin_id = $_SESSION['admin_id'];
                   <tbody><!-- Log on to alphacodecamp.com.ng for more projects! -->
                     <?php
                     //Get latest deposits transactions 
-                    $ret = "SELECT * FROM  iB_Transactions  WHERE tr_type = 'Deposit'";
+                    $ret = "SELECT * FROM  transactions  WHERE tr_type = 'Deposit'";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();
@@ -78,7 +78,7 @@ $admin_id = $_SESSION['admin_id'];
                       $transTstamp = $row->created_at;
 
 
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  iB_bankAccounts WHERE account_id =? ");
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id =? ");
                       $stmt2->execute([$row->account_id]); //ok
                       $resul = $stmt2->get_result();
                       while ($row1 = $resul->fetch_object()) {
@@ -92,7 +92,7 @@ $admin_id = $_SESSION['admin_id'];
                           <?php echo $cnt; ?>
                         </td>
                         <td>
-                          <?php $stmt4 = $mysqli->prepare("SELECT * FROM  ib_sacco WHERE id =? ");
+                          <?php $stmt4 = $mysqli->prepare("SELECT * FROM  sacco WHERE id =? ");
                           $stmt4->execute([$row->sacco_id]); //ok
                           $result4 = $stmt4->get_result();
                           while ($row4 = $result4->fetch_object()) {

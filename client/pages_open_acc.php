@@ -7,33 +7,29 @@ check_login();
 $client_id = $_SESSION['client_id'];
 //register new account
 if (isset($_POST['open_account'])) {
-    //Client open account
     $acc_name = $_POST['acc_name'];
     $account_number = $_POST['account_number'];
     $acc_type = $_POST['acc_type'];
-    $acc_rates = $_POST['acc_rates'];
     $acc_status = $_POST['acc_status'];
     $acc_amount = $_POST['acc_amount'];
-    $client_id  = $_SESSION['client_id'];
-    $client_national_id = $_POST['client_national_id'];
-    $client_name = $_POST['client_name'];
-    $client_phone = $_POST['client_phone'];
-    $client_number = $_POST['client_number'];
-    $client_email  = $_POST['client_email'];
-    $client_adr  = $_POST['client_adr'];
+    $sacco = $_POST['sacco'];
 
-    //Insert Captured information to a database table
-    $query = "INSERT INTO iB_bankAccounts (acc_name, account_number, acc_type, acc_rates, acc_status, acc_amount, client_id, client_name, client_national_id, client_phone, client_number, client_email, client_adr) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    $stmt = $mysqli->prepare($query);
-    //bind paramaters
-    $rc = $stmt->bind_param('sssssssssssss', $acc_name, $account_number, $acc_type, $acc_rates, $acc_status, $acc_amount, $client_id, $client_name, $client_national_id, $client_phone, $client_number, $client_email, $client_adr);
-    $stmt->execute();
+    try {
+        //Insert Captured information to a database table
+        $query = "INSERT INTO bankaccounts (acc_name, account_number, acc_type, acc_status, acc_amount, client_id,sacco_id) VALUES (?,?,?,?,?,?,?)";
+        $stmt = $mysqli->prepare($query);
+        //bind paramaters
+        $stmt->execute([$acc_name, $account_number, $acc_type, $acc_status, $acc_amount, $client_id, $sacco]);
 
-    //declare a varible which will be passed to alert function
-    if ($stmt) {
-        $success = "iBank Account Opened";
-    } else {
-        $err = "Please Try Again Or Try Later";
+        //declare a varible which will be passed to alert function
+        if ($stmt) {
+            $success = "Sacco Account Opened";
+        } else {
+            $err = "Please Try Again Or Try Later";
+        }
+    } catch (\Throwable $th) {
+        //throw $th;
+        $err = $th->getMessage();
     }
 }
 
@@ -55,7 +51,7 @@ if (isset($_POST['open_account'])) {
         <!-- Content Wrapper. Contains page content -->
         <?php
         $client_id = $_SESSION['client_id'];
-        $ret = "SELECT * FROM  iB_clients WHERE client_id = ? ";
+        $ret = "SELECT * FROM  clients WHERE client_id = ? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $client_id);
         $stmt->execute(); //ok
@@ -97,40 +93,52 @@ if (isset($_POST['open_account'])) {
                                     </div>
                                     <!-- form start -->
                                     <form method="post" enctype="multipart/form-data" role="form">
-                                        <div class="card-body">
+                                    <div class="card-body">
                                             <div class="row">
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputEmail1">Client Name</label>
-                                                    <input type="text" readonly name="client_name" value="<?php echo $row->name; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly name="client_name"
+                                                        value="<?php echo $row->name; ?>" required class="form-control"
+                                                        id="exampleInputEmail1">
                                                 </div>
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputPassword1">Client Number</label>
-                                                    <input type="text" readonly name="client_number" value="<?php echo $row->client_number; ?>" class="form-control" id="exampleInputPassword1">
+                                                    <input type="text" readonly name="client_number"
+                                                        value="<?php echo $row->client_number; ?>" class="form-control"
+                                                        id="exampleInputPassword1">
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputEmail1">Client Phone Number</label>
-                                                    <input type="text" readonly name="client_phone" value="<?php echo $row->phone; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly name="client_phone"
+                                                        value="<?php echo $row->phone; ?>" required class="form-control"
+                                                        id="exampleInputEmail1">
                                                 </div>
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputPassword1">Client National ID No.</label>
-                                                    <input type="text" readonly value="<?php echo $row->national_id; ?>" name="client_national_id" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly value="<?php echo $row->national_id; ?>"
+                                                        name="client_national_id" required class="form-control"
+                                                        id="exampleInputEmail1">
+                                                    <input type="hidden" value="<?php echo $row->sacco_id; ?>" name="sacco" class="form-control">
+
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputEmail1">Client Email</label>
-                                                    <input type="email" readonly name="client_email" value="<?php echo $row->email; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="email" readonly name="client_email"
+                                                        value="<?php echo $row->email; ?>" required class="form-control"
+                                                        id="exampleInputEmail1">
                                                 </div>
                                                 <div class="col-md-6 form-group">
                                                     <label for="sacco">Sacco</label>
 
 
                                                     <?php
-                                                    $ret1 = "SELECT * FROM  iB_sacco";
+                                                    $ret1 = "SELECT * FROM  sacco";
                                                     $stmt1 = $mysqli->prepare($ret1);
                                                     $stmt1->execute(); //ok
                                                     $res1 = $stmt1->get_result();
@@ -155,44 +163,51 @@ if (isset($_POST['open_account'])) {
                                             <!--Bank Account Details-->
                                             <div class="row">
                                                 <div class=" col-md-6 form-group">
-                                                    <label for="exampleInputEmail1">iBank Account Type</label>
-                                                    <select class="form-control" onChange="getiBankAccs(this.value);" name="acc_type">
-                                                        <option>Select Any iBank Account types</option>
+                                                    <label for="exampleInputEmail1">Account Type</label>
+                                                    <select class="form-control" onChange="getiBankAccs(this.value);"
+                                                        name="acc_type">
+                                                        <option disabled selected>Select Any Account types</option>
                                                         <?php
-                                                        //fetch all iB_Acc_types
-                                                        $ret = "SELECT * FROM  iB_Acc_types ORDER BY RAND() ";
+                                                        //fetch all acc_types
+                                                        $ret = "SELECT * FROM  acc_types ORDER BY name ASC";
                                                         $stmt = $mysqli->prepare($ret);
                                                         $stmt->execute(); //ok
                                                         $res = $stmt->get_result();
-                                                        $cnt = 1;
                                                         while ($row = $res->fetch_object()) {
 
-                                                        ?>
-                                                            <option value="<?php echo $row->name; ?> "> <?php echo $row->name; ?> </option>
+                                                            ?>
+                                                            <option value="<?php echo $row->acctype_id; ?> ">
+                                                                <?php echo $row->name; ?>
+                                                            </option>
                                                         <?php } ?>
                                                     </select>
 
                                                 </div>
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputEmail1">Account Type Rates (%)</label>
-                                                    <input type="text" name="acc_rates" readonly required class="form-control" id="AccountRates">
+                                                    <input type="text" name="acc_rates" readonly required
+                                                        class="form-control" id="AccountRates">
                                                 </div>
 
                                                 <div class=" col-md-6 form-group" style="display:none">
                                                     <label for="exampleInputEmail1">Account Status</label>
-                                                    <input type="text" name="acc_status" value="Active" readonly required class="form-control">
+                                                    <input type="text" name="acc_status" value="Inactive" readonly required
+                                                        class="form-control">
                                                 </div>
 
                                                 <div class=" col-md-6 form-group" style="display:none">
                                                     <label for="exampleInputEmail1">Account Amount</label>
-                                                    <input type="text" name="acc_amount" value="0" readonly required class="form-control">
+                                                    <input type="text" name="acc_amount" value="0" readonly required
+                                                        class="form-control">
+
                                                 </div>
 
-                                            </div>
+                                            </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
                                             <div class="row">
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputEmail1">Account Name</label>
-                                                    <input type="text" name="acc_name" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" name="acc_name" required class="form-control"
+                                                        id="exampleInputEmail1">
                                                 </div>
 
                                                 <div class=" col-md-6 form-group">
@@ -200,9 +215,11 @@ if (isset($_POST['open_account'])) {
                                                     <?php
                                                     //PHP function to generate random account number
                                                     $length = 12;
-                                                    $_accnumber =  substr(str_shuffle('0123456789'), 1, $length);
+                                                    $_accnumber = substr(str_shuffle('0123456789'), 1, $length);
                                                     ?>
-                                                    <input type="text" name="account_number" value="<?php echo $_accnumber; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" name="account_number"
+                                                        value="<?php echo $_accnumber; ?>" required class="form-control"
+                                                        id="exampleInputEmail1">
                                                 </div>
                                             </div>
                                         </div>

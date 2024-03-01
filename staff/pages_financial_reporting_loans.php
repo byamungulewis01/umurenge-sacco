@@ -4,7 +4,7 @@ include('../conf/config.php');
 include('conf/checklogin.php');
 check_login();
 $staff_id = $_SESSION['staff_id'];
-$ret = "SELECT * FROM ib_staff where staff_id = ?";
+$ret = "SELECT * FROM staff where staff_id = ?";
 $stmt = $mysqli->prepare($ret);
 $stmt->execute([$staff_id]); //ok
 $res = $stmt->get_result();
@@ -73,7 +73,7 @@ while ($row = $res->fetch_object()) {
                   <tbody><!-- Log on to alphacodecamp.com.ng for more projects! -->
                     <?php
                     //Get latest deposits transactions 
-                    $ret = "SELECT * FROM  iB_Transactions  WHERE tr_type = 'Loan' AND sacco_id = ? ";
+                    $ret = "SELECT * FROM  transactions  WHERE tr_type = 'Loan' AND sacco_id = ? ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute([$staff_sacco]); //ok
                     $res = $stmt->get_result();
@@ -85,7 +85,7 @@ while ($row = $res->fetch_object()) {
                       $transTstamp = $row->created_at;
 
 
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  iB_bankAccounts WHERE account_id =? ");
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id =? ");
                       $stmt2->execute([$row->account_id]); //ok
                       $resul = $stmt2->get_result();
                       while ($row1 = $resul->fetch_object()) {

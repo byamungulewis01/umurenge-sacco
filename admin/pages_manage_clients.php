@@ -7,7 +7,7 @@ $admin_id = $_SESSION['admin_id'];
 //fire staff
 if (isset($_GET['deleteClient'])) {
   $id = intval($_GET['deleteClient']);
-  $adn = "DELETE FROM  iB_clients  WHERE client_id = ?";
+  $adn = "DELETE FROM  clients  WHERE client_id = ?";
   $stmt = $mysqli->prepare($adn);
   $stmt->bind_param('i', $id);
   $stmt->execute();
@@ -80,7 +80,7 @@ if (isset($_GET['deleteClient'])) {
                   <tbody>
                     <?php
                     //fetch all iBank clients
-                    $ret = "SELECT * FROM  iB_clients ORDER BY RAND() ";
+                    $ret = "SELECT * FROM  clients ORDER BY RAND() ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();
@@ -95,7 +95,7 @@ if (isset($_GET['deleteClient'])) {
                         <td><?php echo $row->client_number; ?></td>
                         <td>
                           <?php
-                          $stmt2 = $mysqli->prepare("SELECT * FROM  iB_sacco WHERE id = $row->sacco_id");
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  sacco WHERE id = $row->sacco_id");
                           $stmt2->execute(); //ok
                           $res2 = $stmt2->get_result();
                           while ($data = $res2->fetch_object()) {

@@ -66,7 +66,7 @@ $admin_id = $_SESSION['admin_id'];
                   <tbody>
                     <?php
                     //fetch all iBank clients
-                    $ret = "SELECT * FROM  iB_clients ORDER BY client_id Desc ";
+                    $ret = "SELECT * FROM  clients ORDER BY client_id Desc ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();
@@ -81,7 +81,7 @@ $admin_id = $_SESSION['admin_id'];
                         <td><?php echo $row->client_number; ?></td>
                         <td>
                           <?php
-                          $stmt2 = $mysqli->prepare("SELECT * FROM  iB_sacco WHERE id = $row->sacco_id");
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  sacco WHERE id = $row->sacco_id");
                           $stmt2->execute(); //ok
                           $res2 = $stmt2->get_result();
                           while ($data = $res2->fetch_object()) {

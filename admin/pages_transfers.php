@@ -65,7 +65,7 @@ $admin_id = $_SESSION['admin_id'];
                   <tbody>
                     <?php
                     //fetch all iB_Accs
-                    $ret = "SELECT * FROM  iB_bankAccounts ";
+                    $ret = "SELECT * FROM  bankaccounts ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();
@@ -73,7 +73,7 @@ $admin_id = $_SESSION['admin_id'];
                     while ($row = $res->fetch_object()) {
                       //Trim Timestamp to DD-MM-YYYY : H-M-S
                       $dateOpened = $row->created_at;
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  ib_acc_types WHERE acctype_id = $row->acc_type");
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
                       $stmt2->execute(); //ok
                       $res2 = $stmt2->get_result();
                       while ($data = $res2->fetch_object()) {
@@ -89,7 +89,7 @@ $admin_id = $_SESSION['admin_id'];
                         <td><?php echo $rate; ?>%</td>
                         <td><?php echo $acc_type; ?></td>
                         <td><?php
-                            $stmt2 = $mysqli->prepare("SELECT * FROM  ib_clients WHERE client_id = $row->client_id");
+                            $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
                             $stmt2->execute(); //ok
                             $res2 = $stmt2->get_result();
                             while ($data = $res2->fetch_object()) {

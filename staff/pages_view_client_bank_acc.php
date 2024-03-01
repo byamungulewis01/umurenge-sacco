@@ -24,7 +24,7 @@ $staff_id = $_SESSION['staff_id'];
         <!-- Content Wrapper. Contains page content -->
         <?php
         $client_id = $_GET['client_id'];
-        $ret = "SELECT * FROM  iB_clients WHERE client_id =? ";
+        $ret = "SELECT * FROM  clients WHERE client_id =? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $client_id);
         $stmt->execute(); //ok
@@ -83,7 +83,7 @@ $staff_id = $_SESSION['staff_id'];
                                             <?php
                                             //fetch all iB_Accs Which belongs to selected client
                                             $client_id = $_GET['client_id'];
-                                            $ret = "SELECT * FROM  iB_bankAccounts WHERE client_id = ?";
+                                            $ret = "SELECT * FROM  bankaccounts WHERE client_id = ?";
                                             $stmt = $mysqli->prepare($ret);
                                             $stmt->bind_param('i', $client_id);
                                             $stmt->execute(); //ok
@@ -93,7 +93,7 @@ $staff_id = $_SESSION['staff_id'];
                                                 //Trim Timestamp to DD-MM-YYYY : H-M-S
                                                 $dateOpened = $row->created_at;
 
-                                                $stmt2 = $mysqli->prepare("SELECT * FROM  ib_acc_types WHERE acctype_id = $row->acc_type");
+                                                $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
                                                 $stmt2->execute(); //ok
                                                 $res2 = $stmt2->get_result();
                                                 while ($data = $res2->fetch_object()) {
@@ -121,7 +121,7 @@ $staff_id = $_SESSION['staff_id'];
                                                     </td>
                                                     <td>
                                                         <?php
-                                                        $stmt2 = $mysqli->prepare("SELECT * FROM  ib_clients WHERE client_id = $row->client_id");
+                                                        $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
                                                         $stmt2->execute(); //ok
                                                         $res2 = $stmt2->get_result();
                                                         while ($data = $res2->fetch_object()) {

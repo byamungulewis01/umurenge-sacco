@@ -4,7 +4,7 @@ include('../conf/config.php');
 include('conf/checklogin.php');
 check_login();
 $staff_id = $_SESSION['staff_id'];
-$ret = "SELECT * FROM ib_staff where staff_id = ?";
+$ret = "SELECT * FROM staff where staff_id = ?";
 $stmt = $mysqli->prepare($ret);
 $stmt->execute([$staff_id]); //ok
 $res = $stmt->get_result();
@@ -14,7 +14,7 @@ while ($row = $res->fetch_object()) {
 //fire staff
 if (isset($_GET['deleteBankAcc'])) {
   $id = intval($_GET['deleteBankAcc']);
-  $adn = "DELETE FROM  iB_bankAccounts  WHERE account_id = ?";
+  $adn = "DELETE FROM  bankaccounts  WHERE account_id = ?";
   $stmt = $mysqli->prepare($adn);
   $stmt->bind_param('i', $id);
   $stmt->execute();
@@ -87,7 +87,7 @@ if (isset($_GET['deleteBankAcc'])) {
                   <tbody>
                     <?php
                     //fetch all iB_Accs
-                    $ret = "SELECT * FROM  iB_bankAccounts WHERE sacco_id = ? ORDER BY account_id DESC";
+                    $ret = "SELECT * FROM  bankaccounts WHERE sacco_id = ? ORDER BY account_id DESC";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute([$staff_sacco]); //ok
                     $res = $stmt->get_result();
@@ -96,7 +96,7 @@ if (isset($_GET['deleteBankAcc'])) {
                       //Trim Timestamp to DD-MM-YYYY : H-M-S
                       $dateOpened = $row->created_at;
 
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  ib_acc_types WHERE acctype_id = $row->acc_type");
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
                       $stmt2->execute(); //ok
                       $res2 = $stmt2->get_result();
                       while ($data = $res2->fetch_object()) {
@@ -114,7 +114,7 @@ if (isset($_GET['deleteBankAcc'])) {
                         <td><?= $acc_type ?></td>
                         <td>
                           <?php
-                          $stmt2 = $mysqli->prepare("SELECT * FROM  ib_clients WHERE client_id = $row->client_id");
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
                           $stmt2->execute(); //ok
                           $res2 = $stmt2->get_result();
                           while ($data = $res2->fetch_object()) {

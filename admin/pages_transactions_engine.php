@@ -7,7 +7,7 @@ $admin_id = $_SESSION['admin_id'];
 //roll back transaction
 if (isset($_GET['RollBack_Transaction'])) {
   $id = intval($_GET['RollBack_Transaction']);
-  $adn = "DELETE FROM  iB_Transactions  WHERE tr_id = ?";
+  $adn = "DELETE FROM  transactions  WHERE tr_id = ?";
   $stmt = $mysqli->prepare($adn);
   $stmt->bind_param('i', $id);
   $stmt->execute();
@@ -83,7 +83,7 @@ if (isset($_GET['RollBack_Transaction'])) {
                   <tbody>
                     <?php
                     //Get latest transactions 
-                    $ret = "SELECT * FROM `iB_Transactions` ORDER BY `iB_Transactions`.`created_at` DESC ";
+                    $ret = "SELECT * FROM `transactions` ORDER BY `transactions`.`created_at` DESC ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();
@@ -93,7 +93,7 @@ if (isset($_GET['RollBack_Transaction'])) {
                        *  User Uderstandable Formart  DD-MM-YYYY :
                        */
 
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  iB_bankAccounts WHERE account_id =? ");
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id =? ");
                       $stmt2->execute([$row->account_id]); //ok
                       $resul = $stmt2->get_result();
                       while ($row1 = $resul->fetch_object()) {
@@ -124,7 +124,7 @@ if (isset($_GET['RollBack_Transaction'])) {
                           <?php echo $cnt; ?>
                         </td>
                         <td>
-                          <?php $stmt4 = $mysqli->prepare("SELECT * FROM  ib_sacco WHERE id =? ");
+                          <?php $stmt4 = $mysqli->prepare("SELECT * FROM  sacco WHERE id =? ");
                           $stmt4->execute([$row->sacco_id]); //ok
                           $result4 = $stmt4->get_result();
                           while ($row4 = $result4->fetch_object()) {

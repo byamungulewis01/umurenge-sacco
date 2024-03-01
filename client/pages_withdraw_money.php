@@ -31,7 +31,7 @@ if (isset($_POST['withdrawal'])) {
     *   
     */
 
-    $result = "SELECT SUM(transaction_amt) FROM  iB_Transactions  WHERE account_id=?";
+    $result = "SELECT SUM(transaction_amt) FROM  transactions  WHERE account_id=?";
     $stmt = $mysqli->prepare($result);
     $stmt->bind_param('i', $account_id);
     $stmt->execute();
@@ -46,8 +46,8 @@ if (isset($_POST['withdrawal'])) {
 
 
         //Insert Captured information to a database table
-        $query = "INSERT INTO iB_Transactions (tr_code, account_id, acc_name, account_number, acc_type,  tr_type, tr_status, client_id, client_name, client_national_id, transaction_amt, client_phone) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-        $notification = "INSERT INTO  iB_notifications (notification_details) VALUES (?)";
+        $query = "INSERT INTO transactions (tr_code, account_id, acc_name, account_number, acc_type,  tr_type, tr_status, client_id, client_name, client_national_id, transaction_amt, client_phone) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+        $notification = "INSERT INTO  notifications (notification_details) VALUES (?)";
         $stmt = $mysqli->prepare($query);
         $notification_stmt = $mysqli->prepare($notification);
         //bind paramaters
@@ -69,7 +69,7 @@ if (isset($_POST['withdrawal'])) {
        $acc_amount = $_POST['acc_amount'];
         
         //Insert Captured information to a database table
-        $query="UPDATE  iB_bankAccounts SET acc_amount=? WHERE account_id=?";
+        $query="UPDATE  bankaccounts SET acc_amount=? WHERE account_id=?";
         $stmt = $mysqli->prepare($query);
         //bind paramaters
         $rc=$stmt->bind_param('si', $acc_amount, $account_id);
@@ -106,7 +106,7 @@ if (isset($_POST['withdrawal'])) {
         <!-- Content Wrapper. Contains page content -->
         <?php
         $account_id = $_GET['account_id'];
-        $ret = "SELECT * FROM  iB_bankAccounts WHERE account_id = ? ";
+        $ret = "SELECT * FROM  bankaccounts WHERE account_id = ? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $account_id);
         $stmt->execute(); //ok

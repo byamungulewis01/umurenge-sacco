@@ -66,7 +66,7 @@ $client_id = $_SESSION['client_id'];
                     <?php
                     //fetch all iB_Accs
                     $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM  iB_bankAccounts  WHERE client_id = ?";
+                    $ret = "SELECT * FROM  bankaccounts  WHERE acc_status = 'Active' AND client_id = ?";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->bind_param('i', $client_id);
                     $stmt->execute(); //ok
@@ -75,21 +75,48 @@ $client_id = $_SESSION['client_id'];
                     while ($row = $res->fetch_object()) {
                       //Trim Timestamp to DD-MM-YYYY : H-M-S
                       $dateOpened = $row->created_at;
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
+                      $stmt2->execute(); //ok
+                      $res2 = $stmt2->get_result();
+                      while ($data = $res2->fetch_object()) {
+                        $rate = $data->rate;
+                        $acc_type = $data->name;
+                      }
 
                     ?>
 
-                      <tr>
-                        <td><?php echo $cnt; ?></td>
-                        <td><?php echo $row->acc_name; ?></td>
-                        <td><?php echo $row->account_number; ?></td>
-                        <td><?php echo $row->acc_rates; ?>%</td>
-                        <td><?php echo $row->acc_type; ?></td>
-                        <td><?php echo $row->client_name; ?></td>
+<tr>
                         <td>
-                          <a class="btn btn-success btn-sm" href="pages_deposit_money.php?account_id=<?php echo $row->account_id; ?>&account_number=<?php echo $row->account_number; ?>&client_id=<?php echo $row->client_id; ?>">
+                          <?php echo $cnt; ?>
+                        </td>
+                        <td>
+                          <?php echo $row->acc_name; ?>
+                        </td>
+                        <td>
+                          <?php echo $row->account_number; ?>
+                        </td>
+                        <td>
+                          <?php echo $rate; ?>%
+                        </td>
+                        <td>
+                          <?php echo $acc_type; ?>
+                        </td>
+                        <td>
+                          <?php
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
+                          $stmt2->execute(); //ok
+                          $res2 = $stmt2->get_result();
+                          while ($data = $res2->fetch_object()) {
+                            echo $data->name;
+                          }
+                          ?>
+                        </td>
+                        <td>
+                          <a class="btn btn-success btn-sm"
+                            href="pages_deposit_money.php?account_id=<?php echo $row->account_id; ?>&account_number=<?php echo $row->account_number; ?>&client_id=<?php echo $row->client_id; ?>">
                             <i class="fas fa-money-bill-alt"></i>
                             <i class="fas fa-upload"></i>
-                            Deposit Money
+                            Deposit
                           </a>
 
                         </td>

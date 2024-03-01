@@ -4,7 +4,7 @@ include('../conf/config.php');
 include('conf/checklogin.php');
 check_login();
 $staff_id = $_SESSION['staff_id'];
-$ret = "SELECT * FROM ib_staff where staff_id = ?";
+$ret = "SELECT * FROM staff where staff_id = ?";
 $stmt = $mysqli->prepare($ret);
 $stmt->execute([$staff_id]); //ok
 $res = $stmt->get_result();
@@ -71,7 +71,7 @@ while ($row = $res->fetch_object()) {
                   <tbody>
                     <?php
                     //fetch all iB_Accs
-                    $ret = "SELECT * FROM  iB_bankAccounts  WHERE sacco_id = ?";
+                    $ret = "SELECT * FROM  bankaccounts  WHERE sacco_id = ?";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute([$staff_sacco]); //ok
                     $res = $stmt->get_result();
@@ -80,7 +80,7 @@ while ($row = $res->fetch_object()) {
                       //Trim Timestamp to DD-MM-YYYY : H-M-S
                       $dateOpened = $row->created_at;
 
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  ib_acc_types WHERE acctype_id = $row->acc_type");
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
                       $stmt2->execute(); //ok
                       $res2 = $stmt2->get_result();
                       while ($data = $res2->fetch_object()) {
@@ -108,7 +108,7 @@ while ($row = $res->fetch_object()) {
                         </td>
                         <td>
                           <?php
-                          $stmt2 = $mysqli->prepare("SELECT * FROM  ib_clients WHERE client_id = $row->client_id");
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
                           $stmt2->execute(); //ok
                           $res2 = $stmt2->get_result();
                           while ($data = $res2->fetch_object()) {

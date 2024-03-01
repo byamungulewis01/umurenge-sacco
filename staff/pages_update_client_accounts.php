@@ -13,7 +13,7 @@ if (isset($_POST['update_account'])) {
 
     try {
         //Insert Captured information to a database table
-        $query = "UPDATE  iB_bankAccounts  SET acc_name=?, acc_type=? WHERE account_id =?";
+        $query = "UPDATE  bankaccounts  SET acc_name=?, acc_type=? WHERE account_id =?";
         $stmt = $mysqli->prepare($query);
         //bind paramaters
         $stmt->execute([$acc_name, $acc_type, $account_id]);
@@ -48,14 +48,14 @@ if (isset($_POST['update_account'])) {
         <!-- Content Wrapper. Contains page content -->
         <?php
         $account_id = $_GET['account_id'];
-        $ret = "SELECT * FROM  iB_bankAccounts WHERE account_id = ? ";
+        $ret = "SELECT * FROM  bankaccounts WHERE account_id = ? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $account_id);
         $stmt->execute(); //ok
         $res = $stmt->get_result();
         $cnt = 1;
         while ($row = $res->fetch_object()) {
-            $stmt1 = $mysqli->prepare("SELECT * FROM  ib_acc_types WHERE acctype_id = $row->acc_type");
+            $stmt1 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
             $stmt1->execute(); //ok
             $res1 = $stmt1->get_result();
             while ($data1 = $res1->fetch_object()) {
@@ -64,7 +64,7 @@ if (isset($_POST['update_account'])) {
                 $acctype_id = $data1->acctype_id;
             }
 
-            $stmt2 = $mysqli->prepare("SELECT * FROM  ib_clients WHERE client_id = $row->client_id");
+            $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
             $stmt2->execute(); //ok
             $res2 = $stmt2->get_result();
             while ($data2 = $res2->fetch_object()) {
@@ -140,7 +140,7 @@ if (isset($_POST['update_account'])) {
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputEmail1">Sacco</label>
                                                     <?php
-                                                    $stmt2 = $mysqli->prepare("SELECT * FROM  iB_sacco WHERE id = $client_sacco_id");
+                                                    $stmt2 = $mysqli->prepare("SELECT * FROM  sacco WHERE id = $client_sacco_id");
                                                     $stmt2->execute(); //ok
                                                     $res2 = $stmt2->get_result();
                                                     while ($data = $res2->fetch_object()) {
@@ -170,8 +170,8 @@ if (isset($_POST['update_account'])) {
                                                     <label for="exampleInputEmail1">Account Type</label>
                                                     <select class="form-control" onChange="getiBankAccs(this.value);" name="acc_type">
                                                         <?php
-                                                        //fetch all iB_Acc_types
-                                                        $ret = "SELECT * FROM  iB_Acc_types ORDER BY RAND() ";
+                                                        //fetch all acc_types
+                                                        $ret = "SELECT * FROM  acc_types ORDER BY RAND() ";
                                                         $stmt = $mysqli->prepare($ret);
                                                         $stmt->execute(); //ok
                                                         $res = $stmt->get_result();

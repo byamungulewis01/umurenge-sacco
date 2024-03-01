@@ -4,7 +4,7 @@ include('../conf/config.php');
 include('conf/checklogin.php');
 check_login();
 $staff_id = $_SESSION['staff_id'];
-$ret = "SELECT * FROM ib_staff where staff_id = ?";
+$ret = "SELECT * FROM staff where staff_id = ?";
 $stmt = $mysqli->prepare($ret);
 $stmt->execute([$staff_id]); //ok
 $res = $stmt->get_result();
@@ -72,7 +72,7 @@ while ($row = $res->fetch_object()) {
                   <tbody>
                     <?php
                     //fetch all iBank clients
-                    $ret = "SELECT * FROM  iB_clients WHERE sacco_id = ? ORDER BY client_id Desc ";
+                    $ret = "SELECT * FROM  clients WHERE sacco_id = ? ORDER BY client_id Desc ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute([$staff_sacco]); //ok
                     $res = $stmt->get_result();

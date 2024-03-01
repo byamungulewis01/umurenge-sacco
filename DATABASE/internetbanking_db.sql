@@ -24,10 +24,10 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ib_acc_types`
+-- Table structure for table `acc_types`
 --
 
-CREATE TABLE `ib_acc_types` (
+CREATE TABLE `acc_types` (
   `acctype_id` int(20) NOT NULL,
   `name` varchar(200) NOT NULL,
   `description` longtext NOT NULL,
@@ -36,10 +36,10 @@ CREATE TABLE `ib_acc_types` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `ib_acc_types`
+-- Dumping data for table `acc_types`
 --
 
-INSERT INTO `ib_acc_types` (`acctype_id`, `name`, `description`, `rate`, `code`) VALUES
+INSERT INTO `acc_types` (`acctype_id`, `name`, `description`, `rate`, `code`) VALUES
 (1, 'Savings', '<p>Savings accounts&nbsp;are typically the first official bank account anybody opens. Children may open an account with a parent to begin a pattern of saving. Teenagers open accounts to stash cash earned&nbsp;from a first job&nbsp;or household chores.</p><p>Savings accounts are an excellent place to park&nbsp;emergency cash. Opening a savings account also marks the beginning of your relationship with a financial institution. For example, when joining a credit union, your &ldquo;share&rdquo; or savings account establishes your membership.</p>', '20', 'ACC-CAT-4EZFO'),
 (2, ' Retirement', '<p>Retirement accounts&nbsp;offer&nbsp;tax advantages. In very general terms, you get to&nbsp;avoid paying income tax on interest&nbsp;you earn from a savings account or CD each year. But you may have to pay taxes on those earnings at a later date. Still, keeping your money sheltered from taxes may help you over the long term. Most banks offer IRAs (both&nbsp;Traditional IRAs&nbsp;and&nbsp;Roth IRAs), and they may also provide&nbsp;retirement accounts for small businesses</p>', '10', 'ACC-CAT-1QYDV'),
 (4, 'Recurring deposit', '<p><strong>Recurring deposit account or RD account</strong> is opened by those who want to save certain amount of money regularly for a certain period of time and earn a higher interest rate.&nbsp;In RD&nbsp;account a&nbsp;fixed amount is deposited&nbsp;every month for a specified period and the total amount is repaid with interest at the end of the particular fixed period.&nbsp;</p><p>The period of deposit is minimum six months and maximum ten years.&nbsp;The interest rates vary&nbsp;for different plans based on the amount one saves and the period of time and also on banks. No withdrawals are allowed from the RD account. However, the bank may allow to close the account before the maturity period.</p><p>These accounts can be opened in single or joint names. Banks are also providing the Nomination facility to the RD account holders.&nbsp;</p>', '15', 'ACC-CAT-VBQLE'),
@@ -49,10 +49,10 @@ INSERT INTO `ib_acc_types` (`acctype_id`, `name`, `description`, `rate`, `code`)
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ib_admin`
+-- Table structure for table `admin`
 --
 
-CREATE TABLE `ib_admin` (
+CREATE TABLE `admin` (
   `admin_id` int(20) NOT NULL,
   `name` varchar(200) NOT NULL,
   `email` varchar(200) NOT NULL,
@@ -62,19 +62,19 @@ CREATE TABLE `ib_admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `ib_admin`
+-- Dumping data for table `admin`
 --
 
-INSERT INTO `ib_admin` (`admin_id`, `name`, `email`, `number`, `password`, `profile_pic`) VALUES
+INSERT INTO `admin` (`admin_id`, `name`, `email`, `number`, `password`, `profile_pic`) VALUES
 (2, 'System Admin', 'bmg@gmail.com', 'iBank-ADM-0516', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', 'admin-icn.png');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ib_bankaccounts`
+-- Table structure for table `bankaccounts`
 --
 
-CREATE TABLE `ib_bankaccounts` (
+CREATE TABLE `bankaccounts` (
   `account_id` int(20) NOT NULL,
   `acc_name` varchar(200) NOT NULL,
   `account_number` varchar(200) NOT NULL,
@@ -87,10 +87,10 @@ CREATE TABLE `ib_bankaccounts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `ib_bankaccounts`
+-- Dumping data for table `bankaccounts`
 --
 
-INSERT INTO `ib_bankaccounts` (`account_id`, `acc_name`, `account_number`, `acc_type`, `acc_status`, `acc_amount`, `client_id`, `sacco_id`, `created_at`) VALUES
+INSERT INTO `bankaccounts` (`account_id`, `acc_name`, `account_number`, `acc_type`, `acc_status`, `acc_amount`, `client_id`, `sacco_id`, `created_at`) VALUES
 (2, 'Precast Tech ', '319862705', 5, 'Active', 0, 1, 6, '2024-02-24 07:03:56.119924'),
 (3, 'MUSONI Addy', '910634872', 2, 'Active', 0, 5, 4, '2024-02-10 11:43:24.414024'),
 (4, 'SIMBA Ltd update', '730295614', 7, 'Active', 0, 3, 4, '2024-02-10 12:12:06.144287'),
@@ -99,10 +99,10 @@ INSERT INTO `ib_bankaccounts` (`account_id`, `acc_name`, `account_number`, `acc_
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ib_clients`
+-- Table structure for table `clients`
 --
 
-CREATE TABLE `ib_clients` (
+CREATE TABLE `clients` (
   `client_id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL,
   `national_id` varchar(200) NOT NULL,
@@ -115,10 +115,10 @@ CREATE TABLE `ib_clients` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `ib_clients`
+-- Dumping data for table `clients`
 --
 
-INSERT INTO `ib_clients` (`client_id`, `name`, `national_id`, `phone`, `email`, `password`, `profile_pic`, `client_number`, `sacco_id`) VALUES
+INSERT INTO `clients` (`client_id`, `name`, `national_id`, `phone`, `email`, `password`, `profile_pic`, `client_number`, `sacco_id`) VALUES
 (1, 'BYAMUNGU Lewis', '1129930029292292', '0789818378', 'byamungulewis@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', '', 'CLIENT-001', 6),
 (3, 'ISHIMWE Gloria', '1199003939939393', '0786635355', 'ishimwegloria@gmail.com', '0dfed031f0bb0def3670aa08a1575b14ae5d1a4b', 'team-4.jpg', 'CLIENT-002', 4),
 (5, 'MUSONI Addy', '1222555555555545', '0785436135', 'blewis@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', '', 'CLIENT-003', 4);
@@ -126,20 +126,20 @@ INSERT INTO `ib_clients` (`client_id`, `name`, `national_id`, `phone`, `email`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ib_notifications`
+-- Table structure for table `notifications`
 --
 
-CREATE TABLE `ib_notifications` (
+CREATE TABLE `notifications` (
   `notification_id` int(20) NOT NULL,
   `notification_details` text NOT NULL,
   `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `ib_notifications`
+-- Dumping data for table `notifications`
 --
 
-INSERT INTO `ib_notifications` (`notification_id`, `notification_details`, `created_at`) VALUES
+INSERT INTO `notifications` (`notification_id`, `notification_details`, `created_at`) VALUES
 (20, 'Amanda Stiefel Has Deposited $ 2658 To Bank Account 287359614', '2023-02-16 16:17:22.592127'),
 (21, 'Liam Moore Has Deposited $ 5650 To Bank Account 719360482', '2023-02-16 16:29:14.930350'),
 (22, 'Liam Moore Has Withdrawn $ 777 From Bank Account 719360482', '2023-02-16 16:29:38.233567'),
@@ -157,10 +157,10 @@ INSERT INTO `ib_notifications` (`notification_id`, `notification_details`, `crea
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ib_sacco`
+-- Table structure for table `sacco`
 --
 
-CREATE TABLE `ib_sacco` (
+CREATE TABLE `sacco` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `location` varchar(255) NOT NULL,
@@ -168,10 +168,10 @@ CREATE TABLE `ib_sacco` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `ib_sacco`
+-- Dumping data for table `sacco`
 --
 
-INSERT INTO `ib_sacco` (`id`, `name`, `location`, `created_at`) VALUES
+INSERT INTO `sacco` (`id`, `name`, `location`, `created_at`) VALUES
 (4, 'Kinyinya Sacco', 'Kinyinya Sector Update', '2024-01-19 20:21:10'),
 (6, 'Kanombe Sacco', 'Sacco of Kanombe', '2024-02-24 07:02:27'),
 (7, 'Gisenyi Sacco', 'Rubavu Gisenyi', '2024-02-24 07:02:47');
@@ -179,10 +179,10 @@ INSERT INTO `ib_sacco` (`id`, `name`, `location`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ib_staff`
+-- Table structure for table `staff`
 --
 
-CREATE TABLE `ib_staff` (
+CREATE TABLE `staff` (
   `staff_id` int(20) NOT NULL,
   `name` varchar(200) NOT NULL,
   `staff_number` varchar(200) NOT NULL,
@@ -195,10 +195,10 @@ CREATE TABLE `ib_staff` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `ib_staff`
+-- Dumping data for table `staff`
 --
 
-INSERT INTO `ib_staff` (`staff_id`, `name`, `staff_number`, `phone`, `email`, `password`, `sex`, `profile_pic`, `sacco_id`) VALUES
+INSERT INTO `staff` (`staff_id`, `name`, `staff_number`, `phone`, `email`, `password`, `sex`, `profile_pic`, `sacco_id`) VALUES
 (1, 'BYAMUNGU Lewis', 'STAFF-001', '0785554455', 'byamungulewis@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', 'Male', '', 4),
 (2, 'NIYONASENZE Aliane', 'STAFF-002', '0789818378', 'niyonasenze@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', 'Female', '', 6),
 (6, 'Ntwari Lebon', 'STAFF-003', '0785556665', 'ntwarilebon09@gmail.com', 'fef3e9a034e95b328131eb25dd3382d1cc14bf36', 'Male', '', 4);
@@ -206,10 +206,10 @@ INSERT INTO `ib_staff` (`staff_id`, `name`, `staff_number`, `phone`, `email`, `p
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ib_systemsettings`
+-- Table structure for table `systemsettings`
 --
 
-CREATE TABLE `ib_systemsettings` (
+CREATE TABLE `systemsettings` (
   `id` int(20) NOT NULL,
   `sys_name` longtext NOT NULL,
   `sys_tagline` longtext NOT NULL,
@@ -217,19 +217,19 @@ CREATE TABLE `ib_systemsettings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `ib_systemsettings`
+-- Dumping data for table `systemsettings`
 --
 
-INSERT INTO `ib_systemsettings` (`id`, `sys_name`, `sys_tagline`, `sys_logo`) VALUES
+INSERT INTO `systemsettings` (`id`, `sys_name`, `sys_tagline`, `sys_logo`) VALUES
 (1, 'Umurenge SACCO', 'Financial success at every service we offer.', 'ibankinglg.png');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ib_transactions`
+-- Table structure for table `transactions`
 --
 
-CREATE TABLE `ib_transactions` (
+CREATE TABLE `transactions` (
   `tr_id` int(20) NOT NULL,
   `tr_code` varchar(200) NOT NULL,
   `client_id` int(11) NOT NULL,
@@ -243,10 +243,10 @@ CREATE TABLE `ib_transactions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `ib_transactions`
+-- Dumping data for table `transactions`
 --
 
-INSERT INTO `ib_transactions` (`tr_id`, `tr_code`, `client_id`, `account_id`, `tr_type`, `tr_status`, `transaction_amt`, `receiving_acc_id`, `sacco_id`, `created_at`) VALUES
+INSERT INTO `transactions` (`tr_id`, `tr_code`, `client_id`, `account_id`, `tr_type`, `tr_status`, `transaction_amt`, `receiving_acc_id`, `sacco_id`, `created_at`) VALUES
 (1, 'Mvbfql3DkcXw6m2WSKeZ', 1, 2, 'Deposit', 'Success ', 40000, NULL, 7, '2024-02-24 09:30:57.854198'),
 (2, '9t3BzADgkspa8LvCVrcO', 1, 2, 'Withdrawal', 'Success ', 1000, NULL, 6, '2024-02-24 09:31:08.730292'),
 (4, 'BRTg4L3yI1Z9j5SANv7s', 3, 4, 'Deposit', 'Success ', 20000, NULL, 4, '2024-02-24 09:31:12.598864'),
@@ -260,22 +260,22 @@ INSERT INTO `ib_transactions` (`tr_id`, `tr_code`, `client_id`, `account_id`, `t
 --
 
 --
--- Indexes for table `ib_acc_types`
+-- Indexes for table `acc_types`
 --
-ALTER TABLE `ib_acc_types`
+ALTER TABLE `acc_types`
   ADD PRIMARY KEY (`acctype_id`),
   ADD UNIQUE KEY `unique_name` (`name`);
 
 --
--- Indexes for table `ib_admin`
+-- Indexes for table `admin`
 --
-ALTER TABLE `ib_admin`
+ALTER TABLE `admin`
   ADD PRIMARY KEY (`admin_id`);
 
 --
--- Indexes for table `ib_bankaccounts`
+-- Indexes for table `bankaccounts`
 --
-ALTER TABLE `ib_bankaccounts`
+ALTER TABLE `bankaccounts`
   ADD PRIMARY KEY (`account_id`),
   ADD UNIQUE KEY `unique_account_number` (`account_number`),
   ADD UNIQUE KEY `unique_account_name` (`acc_name`),
@@ -284,9 +284,9 @@ ALTER TABLE `ib_bankaccounts`
   ADD KEY `fk_acc_type` (`acc_type`);
 
 --
--- Indexes for table `ib_clients`
+-- Indexes for table `clients`
 --
-ALTER TABLE `ib_clients`
+ALTER TABLE `clients`
   ADD PRIMARY KEY (`client_id`),
   ADD UNIQUE KEY `unique_national_id` (`national_id`),
   ADD UNIQUE KEY `unique_email_id` (`email`),
@@ -295,22 +295,22 @@ ALTER TABLE `ib_clients`
   ADD KEY `fk_saaco_id` (`sacco_id`);
 
 --
--- Indexes for table `ib_notifications`
+-- Indexes for table `notifications`
 --
-ALTER TABLE `ib_notifications`
+ALTER TABLE `notifications`
   ADD PRIMARY KEY (`notification_id`);
 
 --
--- Indexes for table `ib_sacco`
+-- Indexes for table `sacco`
 --
-ALTER TABLE `ib_sacco`
+ALTER TABLE `sacco`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`name`);
 
 --
--- Indexes for table `ib_staff`
+-- Indexes for table `staff`
 --
-ALTER TABLE `ib_staff`
+ALTER TABLE `staff`
   ADD PRIMARY KEY (`staff_id`),
   ADD UNIQUE KEY `unique_email` (`email`),
   ADD UNIQUE KEY `unique_phone` (`phone`),
@@ -318,15 +318,15 @@ ALTER TABLE `ib_staff`
   ADD KEY `fk_saaco66_id` (`sacco_id`);
 
 --
--- Indexes for table `ib_systemsettings`
+-- Indexes for table `systemsettings`
 --
-ALTER TABLE `ib_systemsettings`
+ALTER TABLE `systemsettings`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `ib_transactions`
+-- Indexes for table `transactions`
 --
-ALTER TABLE `ib_transactions`
+ALTER TABLE `transactions`
   ADD PRIMARY KEY (`tr_id`),
   ADD KEY `fk_saaco6_id` (`sacco_id`),
   ADD KEY `fk_account_id` (`account_id`);
@@ -336,57 +336,57 @@ ALTER TABLE `ib_transactions`
 --
 
 --
--- AUTO_INCREMENT for table `ib_acc_types`
+-- AUTO_INCREMENT for table `acc_types`
 --
-ALTER TABLE `ib_acc_types`
+ALTER TABLE `acc_types`
   MODIFY `acctype_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `ib_admin`
+-- AUTO_INCREMENT for table `admin`
 --
-ALTER TABLE `ib_admin`
+ALTER TABLE `admin`
   MODIFY `admin_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `ib_bankaccounts`
+-- AUTO_INCREMENT for table `bankaccounts`
 --
-ALTER TABLE `ib_bankaccounts`
+ALTER TABLE `bankaccounts`
   MODIFY `account_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `ib_clients`
+-- AUTO_INCREMENT for table `clients`
 --
-ALTER TABLE `ib_clients`
+ALTER TABLE `clients`
   MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `ib_notifications`
+-- AUTO_INCREMENT for table `notifications`
 --
-ALTER TABLE `ib_notifications`
+ALTER TABLE `notifications`
   MODIFY `notification_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
--- AUTO_INCREMENT for table `ib_sacco`
+-- AUTO_INCREMENT for table `sacco`
 --
-ALTER TABLE `ib_sacco`
+ALTER TABLE `sacco`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `ib_staff`
+-- AUTO_INCREMENT for table `staff`
 --
-ALTER TABLE `ib_staff`
+ALTER TABLE `staff`
   MODIFY `staff_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `ib_systemsettings`
+-- AUTO_INCREMENT for table `systemsettings`
 --
-ALTER TABLE `ib_systemsettings`
+ALTER TABLE `systemsettings`
   MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `ib_transactions`
+-- AUTO_INCREMENT for table `transactions`
 --
-ALTER TABLE `ib_transactions`
+ALTER TABLE `transactions`
   MODIFY `tr_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
@@ -394,31 +394,31 @@ ALTER TABLE `ib_transactions`
 --
 
 --
--- Constraints for table `ib_bankaccounts`
+-- Constraints for table `bankaccounts`
 --
-ALTER TABLE `ib_bankaccounts`
-  ADD CONSTRAINT `fk_acc_type` FOREIGN KEY (`acc_type`) REFERENCES `ib_acc_types` (`acctype_id`),
-  ADD CONSTRAINT `fk_client_id` FOREIGN KEY (`client_id`) REFERENCES `ib_clients` (`client_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_sacco_id` FOREIGN KEY (`sacco_id`) REFERENCES `ib_sacco` (`id`);
+ALTER TABLE `bankaccounts`
+  ADD CONSTRAINT `fk_acc_type` FOREIGN KEY (`acc_type`) REFERENCES `acc_types` (`acctype_id`),
+  ADD CONSTRAINT `fk_client_id` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_sacco_id` FOREIGN KEY (`sacco_id`) REFERENCES `sacco` (`id`);
 
 --
--- Constraints for table `ib_clients`
+-- Constraints for table `clients`
 --
-ALTER TABLE `ib_clients`
-  ADD CONSTRAINT `fk_saaco_id` FOREIGN KEY (`sacco_id`) REFERENCES `ib_sacco` (`id`);
+ALTER TABLE `clients`
+  ADD CONSTRAINT `fk_saaco_id` FOREIGN KEY (`sacco_id`) REFERENCES `sacco` (`id`);
 
 --
--- Constraints for table `ib_staff`
+-- Constraints for table `staff`
 --
-ALTER TABLE `ib_staff`
-  ADD CONSTRAINT `fk_saaco66_id` FOREIGN KEY (`sacco_id`) REFERENCES `ib_sacco` (`id`);
+ALTER TABLE `staff`
+  ADD CONSTRAINT `fk_saaco66_id` FOREIGN KEY (`sacco_id`) REFERENCES `sacco` (`id`);
 
 --
--- Constraints for table `ib_transactions`
+-- Constraints for table `transactions`
 --
-ALTER TABLE `ib_transactions`
-  ADD CONSTRAINT `fk_account_id` FOREIGN KEY (`account_id`) REFERENCES `ib_bankaccounts` (`account_id`),
-  ADD CONSTRAINT `fk_saaco6_id` FOREIGN KEY (`sacco_id`) REFERENCES `ib_sacco` (`id`);
+ALTER TABLE `transactions`
+  ADD CONSTRAINT `fk_account_id` FOREIGN KEY (`account_id`) REFERENCES `bankaccounts` (`account_id`),
+  ADD CONSTRAINT `fk_saaco6_id` FOREIGN KEY (`sacco_id`) REFERENCES `sacco` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

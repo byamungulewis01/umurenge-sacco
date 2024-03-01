@@ -20,7 +20,7 @@ if (isset($_POST['update_staff_account'])) {
 
     try {
         //Insert Captured information to a database table
-        $query = "UPDATE iB_staff SET name=?, phone=?, email=?, sex=?, profile_pic=?, sacco_id=? WHERE staff_number=?";
+        $query = "UPDATE staff SET name=?, phone=?, email=?, sex=?, profile_pic=?, sacco_id=? WHERE staff_number=?";
         $stmt = $mysqli->prepare($query);
         $stmt->execute([$name, $phone, $email, $sex, $profile_pic, $sacco_id, $staff_number]);
 
@@ -39,7 +39,7 @@ if (isset($_POST['change_staff_password'])) {
     $password = sha1(md5($_POST['password']));
     $staff_number = $_GET['staff_number'];
     //insert unto certain table in database
-    $query = "UPDATE iB_staff  SET password=? WHERE  staff_number=?";
+    $query = "UPDATE staff  SET password=? WHERE  staff_number=?";
     $stmt = $mysqli->prepare($query);
     //bind paramaters
     $rc = $stmt->bind_param('ss', $password, $staff_number);
@@ -73,7 +73,7 @@ if (isset($_POST['change_staff_password'])) {
             <!-- Content Header with logged in user details (Page header) -->
             <?php
             $staff_number = $_GET['staff_number'];
-            $ret = "SELECT * FROM  iB_staff  WHERE staff_number = ? ";
+            $ret = "SELECT * FROM  staff  WHERE staff_number = ? ";
             $stmt = $mysqli->prepare($ret);
             $stmt->bind_param('s', $staff_number);
             $stmt->execute(); //ok
@@ -196,7 +196,7 @@ if (isset($_POST['change_staff_password'])) {
                                                         <label for="inputEmail" class="col-sm-2 col-form-label">Sacco</label>
                                                         <div class="col-sm-10">
                                                             <?php
-                                                            $ret1 = "SELECT * FROM  iB_sacco";
+                                                            $ret1 = "SELECT * FROM  sacco";
                                                             $stmt1 = $mysqli->prepare($ret1);
                                                             $stmt1->execute(); //ok
                                                             $res1 = $stmt1->get_result();

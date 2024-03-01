@@ -8,7 +8,7 @@ $admin_id = $_SESSION['admin_id'];
 if (isset($_GET['saccoId'])) {
     try {
         $id = intval($_GET['saccoId']);
-        $adn = "DELETE FROM  ib_sacco  WHERE id = ?";
+        $adn = "DELETE FROM  sacco  WHERE id = ?";
         $stmt = $mysqli->prepare($adn);
         $stmt->bind_param('i', $id);
         $stmt->execute();
@@ -36,7 +36,7 @@ if (isset($_POST['create_sacco'])) {
 
     //Insert Captured information to a database table
     try {
-        $query = "INSERT INTO ib_sacco (`name`, `location`) VALUES (?,?)";
+        $query = "INSERT INTO sacco (`name`, `location`) VALUES (?,?)";
         $stmt = $mysqli->prepare($query);
         //bind paramaters
         $rc = $stmt->bind_param("ss", $name, $location);
@@ -62,7 +62,7 @@ if (isset($_POST['update_sacco'])) {
 
     //Insert Captured information to a database table
     try {
-        $query = "UPDATE ib_sacco SET `name` = ?, `location`= ? WHERE `id` =?";
+        $query = "UPDATE sacco SET `name` = ?, `location`= ? WHERE `id` =?";
         $stmt = $mysqli->prepare($query);
         //bind paramaters
         $rc = $stmt->bind_param("ssi", $name, $location, $id);
@@ -179,7 +179,7 @@ if (isset($_POST['update_sacco'])) {
                                     <tbody>
                                         <?php
                                         //fetch all iBank staffs
-                                        $ret = "SELECT * FROM  iB_sacco ORDER BY RAND() ";
+                                        $ret = "SELECT * FROM  sacco ORDER BY RAND() ";
                                         $stmt = $mysqli->prepare($ret);
                                         $stmt->execute(); //ok
                                         $res = $stmt->get_result();

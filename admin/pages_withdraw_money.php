@@ -16,7 +16,7 @@ if (isset($_POST['withdrawal'])) {
 
     $transaction_amt = $_POST['transaction_amt'];
 
-    $result = "SELECT SUM(transaction_amt) FROM  iB_Transactions  WHERE account_id=?";
+    $result = "SELECT SUM(transaction_amt) FROM  transactions  WHERE account_id=?";
     $stmt = $mysqli->prepare($result);
     $stmt->bind_param('i', $account_id);
     $stmt->execute();
@@ -31,7 +31,7 @@ if (isset($_POST['withdrawal'])) {
 
 
         //Insert Captured information to a database table
-        $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, transaction_amt,sacco_id) VALUES (?,?,?,?,?,?)";
+        $query = "INSERT INTO transactions (tr_code, account_id, tr_type, tr_status, transaction_amt,sacco_id) VALUES (?,?,?,?,?,?)";
         $stmt = $mysqli->prepare($query);
         $stmt->execute([$tr_code, $account_id, $tr_type, $tr_status, $transaction_amt,$sacco_id]);
         //declare a varible which will be passed to alert function
@@ -60,7 +60,7 @@ if (isset($_POST['withdrawal'])) {
         <!-- Content Wrapper. Contains page content -->
         <?php
         $account_id = $_GET['account_id'];
-        $ret = "SELECT * FROM  iB_bankAccounts WHERE account_id = ? ";
+        $ret = "SELECT * FROM  bankaccounts WHERE account_id = ? ";
         $stmt = $mysqli->prepare($ret);
         $stmt->bind_param('i', $account_id);
         $stmt->execute(); //ok
@@ -68,7 +68,7 @@ if (isset($_POST['withdrawal'])) {
         $cnt = 1;
         while ($row = $res->fetch_object()) {
 
-            $stmt2 = $mysqli->prepare("SELECT * FROM  ib_acc_types WHERE acctype_id = $row->acc_type");
+            $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
             $stmt2->execute(); //ok
             $res2 = $stmt2->get_result();
             while ($data = $res2->fetch_object()) {
@@ -76,7 +76,7 @@ if (isset($_POST['withdrawal'])) {
                 $acc_type = $data->name;
             }
 
-            $stmt3 = $mysqli->prepare("SELECT * FROM  ib_clients WHERE client_id = $row->client_id");
+            $stmt3 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
             $stmt3->execute(); //ok
             $res3 = $stmt3->get_result();
             while ($data3 = $res3->fetch_object()) {

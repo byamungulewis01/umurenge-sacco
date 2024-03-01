@@ -66,7 +66,7 @@ $client_id = $_SESSION['client_id'];
                     <?php
                     //fetch all iB_Accs
                     $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM  iB_bankAccounts WHERE client_id =? ";
+                    $ret = "SELECT * FROM  bankaccounts WHERE client_id =? ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->bind_param('i', $client_id);
                     $stmt->execute(); //ok
@@ -75,7 +75,7 @@ $client_id = $_SESSION['client_id'];
                     while ($row = $res->fetch_object()) {
                       //Trim Timestamp to DD-MM-YYYY : H-M-S
                       $dateOpened = $row->created_at;
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  ib_acc_types WHERE acctype_id = $row->acc_type");
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
                       $stmt2->execute(); //ok
                       $res2 = $stmt2->get_result();
                       while ($data = $res2->fetch_object()) {
@@ -84,7 +84,7 @@ $client_id = $_SESSION['client_id'];
                       }
                     ?>
 
-                      <tr>
+                      <tr <?php if($row->acc_status == 'Inactive') {echo "style='background-color:brown; color :azure;'";} ?>>
                       <td><?php echo $cnt; ?></td>
                         <td><?php echo $row->acc_name; ?></td>
                         <td><?php echo $row->account_number; ?></td>
@@ -92,7 +92,7 @@ $client_id = $_SESSION['client_id'];
                         <td><?= $acc_type ?></td>
                         <td>
                           <?php
-                          $stmt2 = $mysqli->prepare("SELECT * FROM  ib_clients WHERE client_id = $row->client_id");
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
                           $stmt2->execute(); //ok
                           $res2 = $stmt2->get_result();
                           while ($data = $res2->fetch_object()) {

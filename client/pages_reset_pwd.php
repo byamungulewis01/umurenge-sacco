@@ -14,13 +14,13 @@ if (isset($_POST['reset_password'])) {
   if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
     $err = 'Invalid Email';
   }
-  $checkEmail = mysqli_query($mysqli, "SELECT `email` FROM `iB_clients` WHERE `email` = '" . $_POST['email'] . "'") or exit(mysqli_error($mysqli));
+  $checkEmail = mysqli_query($mysqli, "SELECT `email` FROM `clients` WHERE `email` = '" . $_POST['email'] . "'") or exit(mysqli_error($mysqli));
   if (mysqli_num_rows($checkEmail) > 0) {
 
     $n = date('y');
     $new_password = bin2hex(random_bytes($n));
     //Insert Captured information to a database table
-    $query = "UPDATE iB_clients SET  password=? WHERE email =?";
+    $query = "UPDATE clients SET  password=? WHERE email =?";
     $stmt = $mysqli->prepare($query);
     //bind paramaters
     $rc = $stmt->bind_param('ss', $new_password, $email);
@@ -40,7 +40,7 @@ if (isset($_POST['reset_password'])) {
 }
 
 /* Persisit System Settings On Brand */
-$ret = "SELECT * FROM `iB_SystemSettings` ";
+$ret = "SELECT * FROM `systemsettings` ";
 $stmt = $mysqli->prepare($ret);
 $stmt->execute(); //ok
 $res = $stmt->get_result();

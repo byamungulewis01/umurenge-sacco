@@ -5,7 +5,7 @@
     -->
   <?php
   $admin_id = $_SESSION['admin_id'];
-  $ret = "SELECT * FROM  iB_admin  WHERE admin_id = ? ";
+  $ret = "SELECT * FROM  admin  WHERE admin_id = ? ";
   $stmt = $mysqli->prepare($ret);
   $stmt->bind_param('i', $admin_id);
   $stmt->execute(); //ok
@@ -21,7 +21,7 @@
     }
 
     /* Persisit System Settings On Brand */
-    $ret = "SELECT * FROM `iB_SystemSettings` ";
+    $ret = "SELECT * FROM `systemsettings` ";
     $stmt = $mysqli->prepare($ret);
     $stmt->execute(); //ok
     $res = $stmt->get_result();

@@ -21,7 +21,7 @@ if (isset($_POST['create_staff_account'])) {
 
     try {
         //Insert Captured information to a database table
-        $query = "INSERT INTO iB_staff (name, staff_number, phone, email, password, sex, profile_pic,sacco_id) VALUES (?,?,?,?,?,?,?,?)";
+        $query = "INSERT INTO staff (name, staff_number, phone, email, password, sex, profile_pic,sacco_id) VALUES (?,?,?,?,?,?,?,?)";
         $stmt = $mysqli->prepare($query);
         //bind paramaters
         $rc = $stmt->bind_param('sssssssi', $name, $staff_number, $phone, $email, $password, $sex, $profile_pic, $sacco_id);
@@ -96,7 +96,7 @@ if (isset($_POST['create_staff_account'])) {
                                             <div class="col-md-6 form-group">
                                                 <label for="exampleInputPassword1">Sacco</label>
                                                 <?php
-                                                $ret = "SELECT * FROM  iB_sacco";
+                                                $ret = "SELECT * FROM  sacco";
                                                 $stmt = $mysqli->prepare($ret);
                                                 $stmt->execute(); //ok
                                                 $res = $stmt->get_result();
@@ -159,7 +159,7 @@ if (isset($_POST['create_staff_account'])) {
                                                 <label for="exampleInputPassword1">Staff Number</label>
                                                 <?php
                                                 //PHP function to generate random passenger number
-                                                $stmt = $DB_con->prepare("SELECT * FROM  iB_staff");
+                                                $stmt = $DB_con->prepare("SELECT * FROM  staff");
                                                 $stmt->execute();
                                                 $row = $stmt->rowCount();
                                                 $strleft = str_pad($row + 1, 3, '0', STR_PAD_LEFT);

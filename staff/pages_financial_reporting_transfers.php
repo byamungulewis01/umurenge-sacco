@@ -4,7 +4,7 @@ include('../conf/config.php');
 include('conf/checklogin.php');
 check_login();
 $staff_id = $_SESSION['staff_id'];
-$ret = "SELECT * FROM ib_staff where staff_id = ?";
+$ret = "SELECT * FROM staff where staff_id = ?";
 $stmt = $mysqli->prepare($ret);
 $stmt->execute([$staff_id]); //ok
 $res = $stmt->get_result();
@@ -74,7 +74,7 @@ while ($row = $res->fetch_object()) {
                   <tbody>
                     <?php
                     //Get latest deposits transactions 
-                    $ret = "SELECT * FROM  iB_Transactions  WHERE tr_type = 'Transfer' AND sacco_id = ?";
+                    $ret = "SELECT * FROM  transactions  WHERE tr_type = 'Transfer' AND sacco_id = ?";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute([$staff_sacco]); //ok
                     $res = $stmt->get_result();
@@ -85,7 +85,7 @@ while ($row = $res->fetch_object()) {
                             */
                       $transTstamp = $row->created_at;
                       //Perfom some lil magic here
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  iB_bankAccounts WHERE account_id =? ");
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id =? ");
                       $stmt2->execute([$row->account_id]); //ok
                       $resul = $stmt2->get_result();
                       while ($row1 = $resul->fetch_object()) {
@@ -102,7 +102,7 @@ while ($row = $res->fetch_object()) {
                         <td><?php echo $holder; ?></td>
                         <td><?php echo $row->receiving_acc_id; ?></td>
                         <td><?php 
-                          $stmt3 = $mysqli->prepare("SELECT * FROM  ib_bankaccounts WHERE account_number =? ");
+                          $stmt3 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_number =? ");
                           $stmt3->execute([$row->receiving_acc_id]); //ok
                           $resul1 = $stmt3->get_result();
                           while ($row2 = $resul1->fetch_object()) {

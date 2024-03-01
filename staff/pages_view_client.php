@@ -4,7 +4,7 @@ include('../conf/config.php');
 include('conf/checklogin.php');
 check_login();
 $staff_id = $_SESSION['staff_id'];
-$ret = "SELECT * FROM ib_staff where staff_id = ?";
+$ret = "SELECT * FROM staff where staff_id = ?";
 $stmt = $mysqli->prepare($ret);
 $stmt->execute([$staff_id]); //ok
 $res = $stmt->get_result();
@@ -27,7 +27,7 @@ if (isset($_POST['update_client_account'])) {
 
     try {
         //Insert Captured information to a database table
-        $query = "UPDATE  iB_clients SET name=?, national_id=?, phone=?, email=?, profile_pic=?,sacco_id=? WHERE client_number = ?";
+        $query = "UPDATE  clients SET name=?, national_id=?, phone=?, email=?, profile_pic=?,sacco_id=? WHERE client_number = ?";
         $stmt = $mysqli->prepare($query);
         //bind paramaters
         $rc = $stmt->bind_param('sssssss', $name, $national_id, $phone, $email, $profile_pic, $sacco_id, $client_number);
@@ -48,7 +48,7 @@ if (isset($_POST['change_client_password'])) {
     $password = sha1(md5($_POST['password']));
     $client_number = $_GET['client_number'];
     //insert unto certain table in database
-    $query = "UPDATE iB_clients  SET password=? WHERE  client_number=?";
+    $query = "UPDATE clients  SET password=? WHERE  client_number=?";
     $stmt = $mysqli->prepare($query);
     //bind paramaters
     $rc = $stmt->bind_param('ss', $password, $client_number);
@@ -82,7 +82,7 @@ if (isset($_POST['change_client_password'])) {
             <!-- Content Header with logged in user details (Page header) -->
             <?php
             $client_number = $_GET['client_number'];
-            $ret = "SELECT * FROM  iB_clients  WHERE client_number = ? ";
+            $ret = "SELECT * FROM  clients  WHERE client_number = ? ";
             $stmt = $mysqli->prepare($ret);
             $stmt->bind_param('s', $client_number);
             $stmt->execute(); //ok
@@ -211,7 +211,7 @@ if (isset($_POST['change_client_password'])) {
                                                             class="col-sm-2 col-form-label">Sacco</label>
                                                         <div class="col-sm-10">
                                                             <?php
-                                                            $ret1 = "SELECT * FROM  iB_sacco WHERE id = ?";
+                                                            $ret1 = "SELECT * FROM  sacco WHERE id = ?";
                                                             $stmt1 = $mysqli->prepare($ret1);
                                                             $stmt1->execute([$staff_sacco]); //ok
                                                             $res1 = $stmt1->get_result();

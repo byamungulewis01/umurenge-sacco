@@ -68,7 +68,7 @@ $admin_id = $_SESSION['admin_id'];
                   <tbody>
                     <?php
                     //Get latest deposits transactions 
-                    $ret = "SELECT * FROM  iB_Transactions  WHERE tr_type = 'Transfer'";
+                    $ret = "SELECT * FROM  transactions  WHERE tr_type = 'Transfer'";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();
@@ -79,7 +79,7 @@ $admin_id = $_SESSION['admin_id'];
                             */
                       $transTstamp = $row->created_at;
                       //Perfom some lil magic here
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  iB_bankAccounts WHERE account_id =? ");
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id =? ");
                       $stmt2->execute([$row->account_id]); //ok
                       $resul = $stmt2->get_result();
                       while ($row1 = $resul->fetch_object()) {
@@ -91,7 +91,7 @@ $admin_id = $_SESSION['admin_id'];
                       <tr>
                         <td><?php echo $cnt; ?></td>
                         <td>
-                          <?php $stmt4 = $mysqli->prepare("SELECT * FROM  ib_sacco WHERE id =? ");
+                          <?php $stmt4 = $mysqli->prepare("SELECT * FROM  sacco WHERE id =? ");
                           $stmt4->execute([$row->sacco_id]); //ok
                           $result4 = $stmt4->get_result();
                           while ($row4 = $result4->fetch_object()) {
@@ -104,7 +104,7 @@ $admin_id = $_SESSION['admin_id'];
                         <td><?php echo $holder; ?></td>
                         <td><?php echo $row->receiving_acc_id; ?></td>
                         <td><?php 
-                          $stmt3 = $mysqli->prepare("SELECT * FROM  ib_bankaccounts WHERE account_number =? ");
+                          $stmt3 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_number =? ");
                           $stmt3->execute([$row->receiving_acc_id]); //ok
                           $resul1 = $stmt3->get_result();
                           while ($row2 = $resul1->fetch_object()) {

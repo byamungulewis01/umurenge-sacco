@@ -7,7 +7,7 @@ $admin_id = $_SESSION['admin_id'];
 //fire staff
 if (isset($_GET['fireStaff'])) {
   $id = intval($_GET['fireStaff']);
-  $adn = "DELETE FROM  iB_staff  WHERE staff_id = ?";
+  $adn = "DELETE FROM  staff  WHERE staff_id = ?";
   $stmt = $mysqli->prepare($adn);
   $stmt->bind_param('i', $id);
   $stmt->execute();
@@ -80,7 +80,7 @@ if (isset($_GET['fireStaff'])) {
                   <tbody>
                     <?php
                     //fetch all iBank staffs
-                    $ret = "SELECT * FROM  iB_staff ORDER BY staff_id DESC ";
+                    $ret = "SELECT * FROM  staff ORDER BY staff_id DESC ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();
@@ -101,7 +101,7 @@ if (isset($_GET['fireStaff'])) {
                         </td>
                         <td>
                           <?php
-                          $stmt2 = $mysqli->prepare("SELECT * FROM  iB_sacco WHERE id = $row->sacco_id");
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  sacco WHERE id = $row->sacco_id");
                           $stmt2->execute(); //ok
                           $res2 = $stmt2->get_result();
                           while ($data = $res2->fetch_object()) {
