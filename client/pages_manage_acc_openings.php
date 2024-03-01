@@ -75,16 +75,31 @@ $client_id = $_SESSION['client_id'];
                     while ($row = $res->fetch_object()) {
                       //Trim Timestamp to DD-MM-YYYY : H-M-S
                       $dateOpened = $row->created_at;
-
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  ib_acc_types WHERE acctype_id = $row->acc_type");
+                      $stmt2->execute(); //ok
+                      $res2 = $stmt2->get_result();
+                      while ($data = $res2->fetch_object()) {
+                        $rate = $data->rate;
+                        $acc_type = $data->name;
+                      }
                     ?>
 
                       <tr>
-                        <td><?php echo $cnt; ?></td>
+                      <td><?php echo $cnt; ?></td>
                         <td><?php echo $row->acc_name; ?></td>
                         <td><?php echo $row->account_number; ?></td>
-                        <td><?php echo $row->acc_rates; ?>%</td>
-                        <td><?php echo $row->acc_type; ?></td>
-                        <td><?php echo $row->client_name; ?></td>
+                        <td><?= $rate ?></td>
+                        <td><?= $acc_type ?></td>
+                        <td>
+                          <?php
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  ib_clients WHERE client_id = $row->client_id");
+                          $stmt2->execute(); //ok
+                          $res2 = $stmt2->get_result();
+                          while ($data = $res2->fetch_object()) {
+                            echo $data->name;
+                          }
+                          ?>
+                        </td>
                         <td><?php echo date("d-M-Y", strtotime($dateOpened)); ?></td>
                       </tr>
                     <?php $cnt = $cnt + 1;

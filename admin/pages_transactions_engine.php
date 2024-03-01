@@ -98,6 +98,7 @@ if (isset($_GET['RollBack_Transaction'])) {
                       $resul = $stmt2->get_result();
                       while ($row1 = $resul->fetch_object()) {
                         $acc = $row1->account_number;
+                        $accId = $row1->account_id;
                         $holder = $row1->acc_name;
                       }
 
@@ -134,7 +135,7 @@ if (isset($_GET['RollBack_Transaction'])) {
                           <?php echo $row->tr_code; ?></a>
                         </td>
                         <td>
-                          <?php echo $acc; ?>
+                          <?php echo $accId . $acc; ?>
                         </td>
                         <td>
                           <?php echo $alertClass; ?>

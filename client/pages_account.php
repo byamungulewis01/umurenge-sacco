@@ -9,20 +9,18 @@ if (isset($_POST['update_client_account'])) {
     //update client
     $name = $_POST['name'];
     $national_id = $_POST['national_id'];
-    $client_number = $_GET['client_number'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
     //$password = sha1(md5($_POST['password']));
-    $address  = $_POST['address'];
 
     $profile_pic  = $_FILES["profile_pic"]["name"];
     move_uploaded_file($_FILES["profile_pic"]["tmp_name"], "../admin/dist/img/" . $_FILES["profile_pic"]["name"]);
 
     //Insert Captured information to a database table
-    $query = "UPDATE  iB_clients SET name=?, national_id=?, phone=?, email=?, address=?, profile_pic=? WHERE client_number = ?";
+    $query = "UPDATE  iB_clients SET name=?, national_id=?, phone=?, email=?, profile_pic=? WHERE client_id = ?";
     $stmt = $mysqli->prepare($query);
     //bind paramaters
-    $rc = $stmt->bind_param('sssssss', $name, $national_id, $phone, $email,  $address, $profile_pic, $client_number);
+    $rc = $stmt->bind_param('ssssss', $name, $national_id, $phone, $email, $profile_pic, $client_id);
     $stmt->execute();
 
     //declare a varible which will be passed to alert function
@@ -148,9 +146,7 @@ if (isset($_POST['change_client_password'])) {
                                             <li class="list-group-item">
                                                 <b>ClientNo: </b> <a class="float-right"><?php echo $row->client_number; ?></a>
                                             </li>
-                                            <li class="list-group-item">
-                                                <b>Address: </b> <a class="float-right"><?php echo $row->address; ?></a>
-                                            </li>
+                                     
 
                                         </ul>
 
@@ -159,44 +155,6 @@ if (isset($_POST['change_client_password'])) {
                                 </div>
                                 <!-- /.card -->
 
-                                <!-- About Me Box 
-                    <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">About Me</h3>
-                    </div>
-                    <div class="card-body">
-                        <strong><i class="fas fa-book mr-1"></i> Education</strong>
-
-                        <p class="text-muted">
-                        B.S. in Computer Science from the University of Tennessee at Knoxville
-                        </p>
-
-                        <hr>
-
-                        <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
-
-                        <p class="text-muted">Malibu, California</p>
-
-                        <hr>
-
-                        <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
-
-                        <p class="text-muted">
-                        <span class="tag tag-danger">UI Design</span>
-                        <span class="tag tag-success">Coding</span>
-                        <span class="tag tag-info">Javascript</span>
-                        <span class="tag tag-warning">PHP</span>
-                        <span class="tag tag-primary">Node.js</span>
-                        </p>
-
-                        <hr>
-
-                        <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
-
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
-                    </div>
-                    </div>
-                    <!-- /.card --><!-- Log on to alphacodecamp.com.ng for more projects! -->
                             </div>
 
                             <!-- /.col -->
@@ -220,6 +178,31 @@ if (isset($_POST['change_client_password'])) {
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
+                                                        <label for="inputEmail"
+                                                            class="col-sm-2 col-form-label">Sacco</label>
+                                                        <div class="col-sm-10">
+                                                            <?php
+                                                            $ret1 = "SELECT * FROM  iB_sacco WHERE id = ?";
+                                                            $stmt1 = $mysqli->prepare($ret1);
+                                                            $stmt1->execute([$row->sacco_id]); //ok
+                                                            $res1 = $stmt1->get_result();
+                                                            ?>
+                                                            <select class="form-control" name="sacco_id" readonly>
+                                                                <?php while ($row1 = $res1->fetch_object()) { ?>
+                                                                    <option <?php
+                                                                    if ($row1->id == $row->sacco_id) {
+                                                                        echo 'selected';
+                                                                    } else {
+                                                                        echo '';
+                                                                    }
+                                                                    ?> value="<?= $row1->id ?>">
+                                                                        <?= $row1->name ?>
+                                                                    </option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
                                                         <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
                                                         <div class="col-sm-10">
                                                             <input type="email" name="email" required value="<?php echo $row->email; ?>" class="form-control" id="inputEmail">
@@ -237,12 +220,7 @@ if (isset($_POST['change_client_password'])) {
                                                             <input type="text" class="form-control" required readonly name="national_id" value="<?php echo $row->national_id; ?>" id="inputName2">
                                                         </div>
                                                     </div>
-                                                    <div class="form-group row">
-                                                        <label for="inputName2" class="col-sm-2 col-form-label">Address</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control" required name="address" value="<?php echo $row->address; ?>" id="inputName2">
-                                                        </div>
-                                                    </div>
+                                            
                                                     <div class="form-group row">
                                                         <label for="inputName2" class="col-sm-2 col-form-label">Profile Picture</label>
                                                         <div class="input-group col-sm-10">

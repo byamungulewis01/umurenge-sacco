@@ -31,9 +31,9 @@ if (isset($_POST['withdrawal'])) {
 
 
         //Insert Captured information to a database table
-        $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, transaction_amt,sacco_id) VALUES (?,?,?,?,?,?)";
+        $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, transaction_amt,sacco_id,client_id) VALUES (?,?,?,?,?,?,?)";
         $stmt = $mysqli->prepare($query);
-        $stmt->execute([$tr_code, $account_id, $tr_type, $tr_status, $transaction_amt,$sacco_id]);
+        $stmt->execute([$tr_code, $account_id, $tr_type, $tr_status, $transaction_amt,$sacco_id,$_GET['client_id']]);
         //declare a varible which will be passed to alert function
         if ($stmt) {
             $success = "Funds Withdrawled";

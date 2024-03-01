@@ -161,7 +161,7 @@ if (isset($_POST['update_account'])) {
 
                                                 <div class=" col-md-6 form-group">
                                                     <label for="exampleInputEmail1">Account Number</label>
-                                                    <input type="text" name="account_number" readonly value="<?php echo $row->account_number; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" name="account_number" readonly value="<?php echo $row->account_id . $row->account_number; ?>" required class="form-control" id="exampleInputEmail1">
                                                 </div>
                                             </div>
 

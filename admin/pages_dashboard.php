@@ -391,6 +391,7 @@ $stmt->close();
                           $res2 = $stmt2->get_result();
                           while ($data = $res2->fetch_object()) {
                             $account = $data->account_number;
+                            $account_id = $data->account_id;
                             $account_owner = $data->acc_name;
                           }
 
@@ -412,7 +413,7 @@ $stmt->close();
                               <?php echo $row->tr_code; ?></a>
                             </td>
                             <td>
-                              <?php echo $account; ?>
+                              <?php echo $account_id . $account; ?>
                             </td>
                             <td>
                               <?php echo $alertClass; ?>

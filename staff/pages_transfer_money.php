@@ -45,12 +45,12 @@ if (isset($_POST['deposit'])) {
 
 
         //Insert Captured information to a database table
-        $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, transaction_amt, receiving_acc_id,sacco_id) VALUES (?,?,?,?,?,?,?)";
+        $query = "INSERT INTO iB_Transactions (tr_code, account_id, tr_type, tr_status, transaction_amt, receiving_acc_id,sacco_id,client_id) VALUES (?,?,?,?,?,?,?,?)";
 
         $stmt = $mysqli->prepare($query);
 
         //bind paramaters
-        $rc = $stmt->bind_param('ssssssi', $tr_code, $account_id, $tr_type, $tr_status, $transaction_amt, $receiving_acc_no, $staff_sacco);
+        $rc = $stmt->bind_param('ssssssii', $tr_code, $account_id, $tr_type, $tr_status, $transaction_amt, $receiving_acc_no, $staff_sacco,$_GET['client_id']);
 
         $stmt->execute();
 

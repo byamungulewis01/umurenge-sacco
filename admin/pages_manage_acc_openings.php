@@ -102,7 +102,7 @@ if (isset($_GET['deleteBankAcc'])) {
                       <tr>
                         <td><?php echo $cnt; ?></td>
                         <td><?php echo $row->acc_name; ?></td>
-                        <td><?php echo $row->account_number; ?></td>
+                        <td><?= $row->account_id ?><?php echo $row->account_number; ?></td>
                         <td><?= $rate ?></td>
                         <td><?= $acc_type ?></td>
                         <td>

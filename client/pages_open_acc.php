@@ -125,9 +125,29 @@ if (isset($_POST['open_account'])) {
                                                     <label for="exampleInputEmail1">Client Email</label>
                                                     <input type="email" readonly name="client_email" value="<?php echo $row->email; ?>" required class="form-control" id="exampleInputEmail1">
                                                 </div>
-                                                <div class=" col-md-6 form-group">
-                                                    <label for="exampleInputEmail1">Client Address</label>
-                                                    <input type="text" name="client_adr" readonly value="<?php echo $row->address; ?>" required class="form-control" id="exampleInputEmail1">
+                                                <div class="col-md-6 form-group">
+                                                    <label for="sacco">Sacco</label>
+
+
+                                                    <?php
+                                                    $ret1 = "SELECT * FROM  iB_sacco";
+                                                    $stmt1 = $mysqli->prepare($ret1);
+                                                    $stmt1->execute(); //ok
+                                                    $res1 = $stmt1->get_result();
+                                                    ?>
+                                                    <select disabled class="form-control" name="sacco_id">
+                                                        <?php while ($row1 = $res1->fetch_object()) { ?>
+                                                            <option <?php
+                                                            if ($row1->id == $row->sacco_id) {
+                                                                echo 'selected';
+                                                            } else {
+                                                                echo '';
+                                                            }
+                                                            ?> value="<?= $row1->id ?>">
+                                                                <?= $row1->name ?>
+                                                            </option>
+                                                        <?php } ?>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <!-- ./End Personal Details -->

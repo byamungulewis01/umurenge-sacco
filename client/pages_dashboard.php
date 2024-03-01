@@ -142,7 +142,7 @@ $stmt->close();
                 <div class="info-box-content">
                   <span class="info-box-text">Deposits</span>
                   <span class="info-box-number">
-                    $ <?php echo $iB_deposits; ?>
+                   <?php echo number_format($iB_deposits); ?> Frw
                   </span>
                 </div>
               </div>
@@ -156,7 +156,7 @@ $stmt->close();
 
                 <div class="info-box-content">
                   <span class="info-box-text">Withdrawals</span>
-                  <span class="info-box-number">$ <?php echo $iB_withdrawal; ?> </span>
+                  <span class="info-box-number"><?php echo number_format($iB_withdrawal); ?>Frw </span>
                 </div>
               </div>
             </div>
@@ -171,7 +171,7 @@ $stmt->close();
                 <span class="info-box-icon bg-success elevation-1"><i class="fas fa-random"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Transfers</span>
-                  <span class="info-box-number">$ <?php echo $iB_Transfers; ?></span>
+                  <span class="info-box-number"> <?php echo number_format($iB_Transfers); ?> Frw</span>
                 </div>
               </div>
             </div>
@@ -183,7 +183,7 @@ $stmt->close();
                 <span class="info-box-icon bg-purple elevation-1"><i class="fas fa-money-bill-alt"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Wallet Balance</span>
-                  <span class="info-box-number">$ <?php echo $TotalBalInAccount; ?></span>
+                  <span class="info-box-number"><?php echo number_format($TotalBalInAccount); ?> Frw</span>
                 </div>
               </div>
             </div>
@@ -231,7 +231,7 @@ $stmt->close();
                   <div class="row">
                     <div class="col-sm-3 col-6">
                       <div class="description-block border-right">
-                        <h5 class="description-header">$ <?php echo $iB_deposits; ?></h5>
+                        <h5 class="description-header"><?php echo $iB_deposits; ?></h5>
                         <span class="description-text">TOTAL DEPOSITS</span>
                       </div>
                       <!-- /.description-block -->
@@ -239,7 +239,7 @@ $stmt->close();
                     <!-- /.col -->
                     <div class="col-sm-3 col-6">
                       <div class="description-block border-right">
-                        <h5 class="description-header">$ <?php echo $iB_withdrawal; ?></h5>
+                        <h5 class="description-header"><?php echo $iB_withdrawal; ?></h5>
                         <span class="description-text">TOTAL WITHDRAWALS</span>
                       </div>
                       <!-- /.description-block -->
@@ -247,7 +247,7 @@ $stmt->close();
                     <!-- /.col -->
                     <div class="col-sm-3 col-6">
                       <div class="description-block border-right">
-                        <h5 class="description-header">$ <?php echo $iB_Transfers; ?> </h5>
+                        <h5 class="description-header"><?php echo $iB_Transfers; ?> </h5>
                         <span class="description-text">TOTAL TRANSFERS</span>
                       </div>
                       <!-- /.description-block -->
@@ -255,7 +255,7 @@ $stmt->close();
                     <!-- /.col -->
                     <div class="col-sm-3 col-6">
                       <div class="description-block">
-                        <h5 class="description-header">$ <?php echo $new_amt; ?> </h5>
+                        <h5 class="description-header"><?php echo $new_amt; ?> </h5>
                         <span class="description-text">TOTAL MONEY IN  Account</span>
                       </div>
                       <!-- /.description-block -->
@@ -307,33 +307,54 @@ $stmt->close();
                         <?php
                         //Get latest transactions ;
                         $client_id = $_SESSION['client_id'];
-                        $ret = "SELECT * FROM iB_Transactions WHERE  client_id = ?  ORDER BY iB_Transactions. created_at DESC ";
+                        $ret = "SELECT * FROM iB_Transactions WHERE  client_id = ?  ORDER BY iB_Transactions.created_at DESC ";
                         $stmt = $mysqli->prepare($ret);
                         $stmt->bind_param('i', $client_id);
                         $stmt->execute(); //ok
                         $res = $stmt->get_result();
                         $cnt = 1;
                         while ($row = $res->fetch_object()) {
-                          /* Trim Transaction Timestamp to 
-                            *  User Uderstandable Formart  DD-MM-YYYY :
-                            */
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  ib_bankaccounts WHERE account_id = $row->account_id");
+                          $stmt2->execute(); //ok
+                          $res2 = $stmt2->get_result();
+                          while ($data = $res2->fetch_object()) {
+                            $account = $data->account_number;
+                            $account_id = $data->account_id;
+                            $account_owner = $data->acc_name;
+                          }
+
+
                           $transTstamp = $row->created_at;
                           //Perfom some lil magic here
                           if ($row->tr_type == 'Deposit') {
                             $alertClass = "<span class='badge badge-success'>$row->tr_type</span>";
                           } elseif ($row->tr_type == 'Withdrawal') {
                             $alertClass = "<span class='badge badge-danger'>$row->tr_type</span>";
-                          } else {
+                          } elseif ($row->tr_type == 'Loan'){
+                            $alertClass = "<span class='badge badge-primary'>$row->tr_type</span>";
+                          }else {
                             $alertClass = "<span class='badge badge-warning'>$row->tr_type</span>";
                           }
                         ?>
-                          <tr>
-                            <td><?php echo $row->tr_code; ?></a></td>
-                            <td><?php echo $row->account_number; ?></td>
-                            <td><?php echo $alertClass; ?></td>
-                            <td>$ <?php echo $row->transaction_amt; ?></td>
-                            <td><?php echo $row->client_name; ?></td>
-                            <td><?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?></td>
+                        <tr>
+                            <td>
+                              <?php echo $row->tr_code; ?></a>
+                            </td>
+                            <td>
+                              <?php echo  $account_id . $account; ?>
+                            </td>
+                            <td>
+                              <?php echo $alertClass; ?>
+                            </td>
+                            <td>
+                              <?php echo $row->transaction_amt; ?>
+                            </td>
+                            <td>
+                              <?php echo $account_owner; ?>
+                            </td>
+                            <td>
+                              <?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?>
+                            </td>
                           </tr>
 
                         <?php } ?>
@@ -440,7 +461,7 @@ $stmt->close();
               y: <?php
                   //return total number of accounts opened under  Retirement  acc type
                   $client_id  = $_SESSION['client_id'];
-                  $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type =' Retirement' AND client_id =? ";
+                  $result = "SELECT count(*) FROM iB_bankAccounts WHERE  acc_type ='Retirement' AND client_id =? ";
                   $stmt = $mysqli->prepare($result);
                   $stmt->bind_param('i', $client_id);
                   $stmt->execute();

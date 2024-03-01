@@ -22,7 +22,7 @@ if (isset($_POST['update_client_account'])) {
     $sacco_id = $_POST['sacco_id'];
     //$password = sha1(md5($_POST['password']));
 
-    $profile_pic  = $_FILES["profile_pic"]["name"];
+    $profile_pic = $_FILES["profile_pic"]["name"];
     move_uploaded_file($_FILES["profile_pic"]["tmp_name"], "dist/img/" . $_FILES["profile_pic"]["name"]);
 
     try {
@@ -108,19 +108,23 @@ if (isset($_POST['change_client_password'])) {
                 }
 
 
-            ?>
+                ?>
                 <section class="content-header">
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1><?php echo $row->name; ?> Profile</h1>
+                                <h1>
+                                    <?php echo $row->name; ?> Profile
+                                </h1>
                             </div>
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="pages_manage_clients.php">iBanking Clients</a></li>
                                     <li class="breadcrumb-item"><a href="pages_manage_clients.php">Manage</a></li>
-                                    <li class="breadcrumb-item active"><?php echo $row->name; ?></li>
+                                    <li class="breadcrumb-item active">
+                                        <?php echo $row->name; ?>
+                                    </li>
                                 </ol>
                             </div>
                         </div>
@@ -140,22 +144,32 @@ if (isset($_POST['change_client_password'])) {
                                             <?php echo $profile_picture; ?>
                                         </div>
 
-                                        <h3 class="profile-username text-center"><?php echo $row->name; ?></h3>
+                                        <h3 class="profile-username text-center">
+                                            <?php echo $row->name; ?>
+                                        </h3>
 
                                         <p class="text-muted text-center">Client @iBanking </p>
 
                                         <ul class="list-group list-group-unbordered mb-3">
                                             <li class="list-group-item">
-                                                <b>ID No.: </b> <a class="float-right"><?php echo $row->national_id; ?></a>
+                                                <b>ID No.: </b> <a class="float-right">
+                                                    <?php echo $row->national_id; ?>
+                                                </a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>Email: </b> <a class="float-right"><?php echo $row->email; ?></a>
+                                                <b>Email: </b> <a class="float-right">
+                                                    <?php echo $row->email; ?>
+                                                </a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>Phone: </b> <a class="float-right"><?php echo $row->phone; ?></a>
+                                                <b>Phone: </b> <a class="float-right">
+                                                    <?php echo $row->phone; ?>
+                                                </a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>ClientNo: </b> <a class="float-right"><?php echo $row->client_number; ?></a>
+                                                <b>ClientNo: </b> <a class="float-right">
+                                                    <?php echo $row->client_number; ?>
+                                                </a>
                                             </li>
 
 
@@ -166,44 +180,7 @@ if (isset($_POST['change_client_password'])) {
                                 </div>
                                 <!-- /.card -->
 
-                                <!-- About Me Box 
-                    <div class="card card-purple">
-                    <div class="card-header">
-                        <h3 class="card-title">About Me</h3>
-                    </div>
-                    <div class="card-body">
-                        <strong><i class="fas fa-book mr-1"></i> Education</strong>
 
-                        <p class="text-muted">
-                        B.S. in Computer Science from the University of Tennessee at Knoxville
-                        </p>
-
-                        <hr>
-
-                        <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
-
-                        <p class="text-muted">Malibu, California</p>
-
-                        <hr>
-
-                        <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
-
-                        <p class="text-muted">
-                        <span class="tag tag-danger">UI Design</span>
-                        <span class="tag tag-success">Coding</span>
-                        <span class="tag tag-info">Javascript</span>
-                        <span class="tag tag-warning">PHP</span>
-                        <span class="tag tag-primary">Node.js</span>
-                        </p>
-
-                        <hr>
-
-                        <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
-
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
-                    </div>
-                    </div>
-                    <!-- /.card -->
                             </div>
 
                             <!-- /.col -->
@@ -211,8 +188,10 @@ if (isset($_POST['change_client_password'])) {
                                 <div class="card">
                                     <div class="card-header p-2">
                                         <ul class="nav nav-pills">
-                                            <li class="nav-item"><a class="nav-link active" href="#update_Profile" data-toggle="tab">Update Profile</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="#Change_Password" data-toggle="tab">Change Password</a></li>
+                                            <li class="nav-item"><a class="nav-link active" href="#update_Profile"
+                                                    data-toggle="tab">Update Profile</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="#Change_Password"
+                                                    data-toggle="tab">Change Password</a></li>
                                         </ul>
                                     </div><!-- /.card-header -->
                                     <div class="card-body">
@@ -223,11 +202,13 @@ if (isset($_POST['change_client_password'])) {
                                                     <div class="form-group row">
                                                         <label for="inputName" class="col-sm-2 col-form-label">Name</label>
                                                         <div class="col-sm-10">
-                                                            <input type="text" name="name" required class="form-control" value="<?php echo $row->name; ?>" id="inputName">
+                                                            <input type="text" name="name" required class="form-control"
+                                                                value="<?php echo $row->name; ?>" id="inputName">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="inputEmail" class="col-sm-2 col-form-label">Sacco</label>
+                                                        <label for="inputEmail"
+                                                            class="col-sm-2 col-form-label">Sacco</label>
                                                         <div class="col-sm-10">
                                                             <?php
                                                             $ret1 = "SELECT * FROM  iB_sacco WHERE id = ?";
@@ -238,12 +219,12 @@ if (isset($_POST['change_client_password'])) {
                                                             <select class="form-control" name="sacco_id" readonly>
                                                                 <?php while ($row1 = $res1->fetch_object()) { ?>
                                                                     <option <?php
-                                                                            if ($row1->id == $row->sacco_id) {
-                                                                                echo 'selected';
-                                                                            } else {
-                                                                                echo '';
-                                                                            }
-                                                                            ?> value="<?= $row1->id ?>">
+                                                                    if ($row1->id == $row->sacco_id) {
+                                                                        echo 'selected';
+                                                                    } else {
+                                                                        echo '';
+                                                                    }
+                                                                    ?> value="<?= $row1->id ?>">
                                                                         <?= $row1->name ?>
                                                                     </option>
                                                                 <?php } ?>
@@ -251,36 +232,49 @@ if (isset($_POST['change_client_password'])) {
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                                                        <label for="inputEmail"
+                                                            class="col-sm-2 col-form-label">Email</label>
                                                         <div class="col-sm-10">
-                                                            <input type="email" name="email" required value="<?php echo $row->email; ?>" class="form-control" id="inputEmail">
+                                                            <input type="email" name="email" required
+                                                                value="<?php echo $row->email; ?>" class="form-control"
+                                                                id="inputEmail">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="inputName2" class="col-sm-2 col-form-label">Contact</label>
+                                                        <label for="inputName2"
+                                                            class="col-sm-2 col-form-label">Contact</label>
                                                         <div class="col-sm-10">
-                                                            <input type="text" class="form-control" required name="phone" value="<?php echo $row->phone; ?>" id="inputName2">
+                                                            <input type="text" class="form-control" required name="phone"
+                                                                value="<?php echo $row->phone; ?>" id="inputName2">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="inputName2" class="col-sm-2 col-form-label">National ID Number</label>
+                                                        <label for="inputName2" class="col-sm-2 col-form-label">National ID
+                                                            Number</label>
                                                         <div class="col-sm-10">
-                                                            <input type="text" class="form-control" required name="national_id" value="<?php echo $row->national_id; ?>" id="inputName2">
+                                                            <input type="text" class="form-control" required
+                                                                name="national_id" value="<?php echo $row->national_id; ?>"
+                                                                id="inputName2">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="inputName2" class="col-sm-2 col-form-label">Profile Picture</label>
+                                                        <label for="inputName2" class="col-sm-2 col-form-label">Profile
+                                                            Picture</label>
                                                         <div class="input-group col-sm-10">
                                                             <div class="custom-file">
-                                                                <input type="file" name="profile_pic" class=" form-control custom-file-input" id="exampleInputFile">
-                                                                <label class="custom-file-label  col-form-label" for="exampleInputFile">Choose file</label>
+                                                                <input type="file" name="profile_pic"
+                                                                    class=" form-control custom-file-input"
+                                                                    id="exampleInputFile">
+                                                                <label class="custom-file-label  col-form-label"
+                                                                    for="exampleInputFile">Choose file</label>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <div class="offset-sm-2 col-sm-10">
-                                                            <button name="update_client_account" type="submit" class="btn btn-outline-success">Update Account</button>
+                                                            <button name="update_client_account" type="submit"
+                                                                class="btn btn-outline-success">Update Account</button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -290,26 +284,33 @@ if (isset($_POST['change_client_password'])) {
                                             <div class="tab-pane" id="Change_Password">
                                                 <form method="post" class="form-horizontal">
                                                     <div class="form-group row">
-                                                        <label for="inputName" class="col-sm-2 col-form-label">Old Password</label>
+                                                        <label for="inputName" class="col-sm-2 col-form-label">Old
+                                                            Password</label>
                                                         <div class="col-sm-10">
-                                                            <input type="password" class="form-control" required id="inputName">
+                                                            <input type="password" class="form-control" required
+                                                                id="inputName">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="inputEmail" class="col-sm-2 col-form-label">New Password</label>
+                                                        <label for="inputEmail" class="col-sm-2 col-form-label">New
+                                                            Password</label>
                                                         <div class="col-sm-10">
-                                                            <input type="password" name="password" class="form-control" required id="inputEmail">
+                                                            <input type="password" name="password" class="form-control"
+                                                                required id="inputEmail">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="inputName2" class="col-sm-2 col-form-label">Confirm New Password</label>
+                                                        <label for="inputName2" class="col-sm-2 col-form-label">Confirm New
+                                                            Password</label>
                                                         <div class="col-sm-10">
-                                                            <input type="password" class="form-control" required id="inputName2">
+                                                            <input type="password" class="form-control" required
+                                                                id="inputName2">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <div class="offset-sm-2 col-sm-10">
-                                                            <button type="submit" name="change_client_password" class="btn btn-outline-success">Change Password</button>
+                                                            <button type="submit" name="change_client_password"
+                                                                class="btn btn-outline-success">Change Password</button>
                                                         </div>
                                                     </div>
 

@@ -201,7 +201,7 @@ $stmt->close();
                 <div class="info-box-content">
                   <span class="info-box-text"> Deposits</span>
                   <span class="info-box-number">
-                    <?php echo $iB_deposits; ?>
+                    <?php echo number_format($iB_deposits); ?> Frw
                   </span>
                 </div>
               </div>
@@ -216,7 +216,7 @@ $stmt->close();
                 <div class="info-box-content">
                   <span class="info-box-text">Withdrawals</span>
                   <span class="info-box-number">
-                    <?php echo $iB_withdrawal; ?>
+                    <?php echo number_format($iB_withdrawal); ?> Frw
                   </span>
                 </div>
               </div>
@@ -233,7 +233,7 @@ $stmt->close();
                 <div class="info-box-content">
                   <span class="info-box-text">Transfers</span>
                   <span class="info-box-number">
-                    <?php echo $iB_Transfers; ?>
+                    <?php echo number_format($iB_Transfers); ?>Frw
                   </span>
                 </div>
               </div>
@@ -247,7 +247,7 @@ $stmt->close();
                 <div class="info-box-content">
                   <span class="info-box-text">Wallet Balance</span>
                   <span class="info-box-number">
-                    <?php echo $TotalBalInAccount; ?>
+                    <?php echo number_format($TotalBalInAccount); ?>Frw
                   </span>
                 </div>
               </div>
@@ -387,15 +387,12 @@ $stmt->close();
                         $res = $stmt->get_result();
                         $cnt = 1;
                         while ($row = $res->fetch_object()) {
-                          /* Trim Transaction Timestamp to 
-                           *  User Uderstandable Formart  DD-MM-YYYY :
-                           */
-
                           $stmt2 = $mysqli->prepare("SELECT * FROM  ib_bankaccounts WHERE account_id = $row->account_id");
                           $stmt2->execute(); //ok
                           $res2 = $stmt2->get_result();
                           while ($data = $res2->fetch_object()) {
                             $account = $data->account_number;
+                            $account_id = $data->account_id;
                             $account_owner = $data->acc_name;
                           }
 
@@ -406,7 +403,9 @@ $stmt->close();
                             $alertClass = "<span class='badge badge-success'>$row->tr_type</span>";
                           } elseif ($row->tr_type == 'Withdrawal') {
                             $alertClass = "<span class='badge badge-danger'>$row->tr_type</span>";
-                          } else {
+                          } elseif ($row->tr_type == 'Loan'){
+                            $alertClass = "<span class='badge badge-primary'>$row->tr_type</span>";
+                          }else {
                             $alertClass = "<span class='badge badge-warning'>$row->tr_type</span>";
                           }
                           ?>
@@ -415,7 +414,7 @@ $stmt->close();
                               <?php echo $row->tr_code; ?></a>
                             </td>
                             <td>
-                              <?php echo $account; ?>
+                              <?php echo  $account_id . $account; ?>
                             </td>
                             <td>
                               <?php echo $alertClass; ?>
