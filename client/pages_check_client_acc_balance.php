@@ -1,13 +1,12 @@
 <?php
 session_start();
 include('../conf/config.php');
-
 include('conf/checklogin.php');
 check_login();
 $client_id = $_SESSION['client_id'];
 
 ?>
-<!-- Log on to alphacodecamp.com.ng for more projects! -->
+
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -62,6 +61,15 @@ $client_id = $_SESSION['client_id'];
         $stmt->bind_result($Transfer);
         $stmt->fetch();
         $stmt->close();
+        //get total amount Loan
+        $account_id = $_GET['account_id'];
+        $result = "SELECT SUM(transaction_amt) FROM transactions WHERE  account_id = ? AND  tr_type = 'Loan' ";
+        $stmt = $mysqli->prepare($result);
+        $stmt->bind_param('i', $account_id);
+        $stmt->execute();
+        $stmt->bind_result($Loan);
+        $stmt->fetch();
+        $stmt->close();
 
 
 
@@ -84,21 +92,36 @@ $client_id = $_SESSION['client_id'];
             //compute the intrest + balance 
             $totalMoney = $rate_amt + $money_in;
 
-        ?>
+            $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
+            $stmt2->execute(); //ok
+            $res2 = $stmt2->get_result();
+            while ($data = $res2->fetch_object()) {
+                $client_name = $data->name;
+                $client_number = $data->client_number;
+                $client_email = $data->email;
+                $client_phone = $data->phone;
+                $client_national_id = $data->national_id;
+            }
+
+            ?>
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1><?php echo $row->client_name; ?> Account Balance</h1>
+                                <h1>
+                                    <?= $client_name ?>Account Balance
+                                </h1>
                             </div>
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="pages_balance_enquiries.php">Finances</a></li>
                                     <li class="breadcrumb-item"><a href="pages_balance_enquiries.php">Balances</a></li>
-                                    <li class="breadcrumb-item active"><?php echo $row->client_name; ?> Accs</li>
+                                    <li class="breadcrumb-item active">
+                                        <?php echo $client_name; ?> Accs
+                                    </li>
                                 </ol>
                             </div>
                         </div>
@@ -117,31 +140,51 @@ $client_id = $_SESSION['client_id'];
                                         <div class="col-12">
                                             <h4>
                                                 <i class="fas fa-bank"></i> iBanking Corporation Balance Enquiry
-                                                <small class="float-right">Date: <?php echo date('d/m/Y'); ?></small>
+                                                <small class="float-right">Date:
+                                                    <?php echo date('d/m/Y'); ?>
+                                                </small>
                                             </h4>
                                         </div>
                                         <!-- /.col -->
-                                    </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
+                                    </div>
                                     <!-- info row -->
                                     <div class="row invoice-info">
                                         <div class="col-sm-6 invoice-col">
                                             Account Holder
                                             <address>
-                                                <strong><?php echo $row->client_name; ?></strong><br>
-                                                <?php echo $row->client_number; ?><br>
-                                                <?php echo $row->client_email; ?><br>
-                                                Phone: <?php echo $row->client_phone; ?><br>
-                                                ID No: <?php echo $row->client_national_id; ?>
+                                                <strong>
+                                                    <?php echo $client_name; ?>
+                                                </strong><br>
+                                                <?php echo $client_number; ?><br>
+                                                <?php echo $client_email; ?><br>
+                                                Phone:
+                                                <?php echo $client_phone; ?><br>
+                                                ID No:
+                                                <?php echo $client_national_id; ?>
                                             </address>
                                         </div>
                                         <!-- /.col -->
                                         <div class="col-sm-6 invoice-col">
                                             Account Details
+                                            <?php 
+                                            $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
+                                            $stmt2->execute(); //ok
+                                            $res2 = $stmt2->get_result();
+                                            while ($data = $res2->fetch_object()) {
+                                                $rate = $data->rate;
+                                                $acc_type = $data->name;
+                                            }
+                                            ?>
                                             <address>
-                                                <strong><?php echo $row->acc_name; ?></strong><br>
-                                                Acc No: <?php echo $row->account_number; ?><br>
-                                                Acc Type: <?php echo $row->acc_type; ?><br>
-                                                Acc Rates: <?php echo $row->acc_rates; ?> %
+                                                <strong>
+                                                    <?php echo $row->acc_name; ?>
+                                                </strong><br>
+                                                Acc No:
+                                                <?php echo $row->account_number; ?><br>
+                                                Acc Type:
+                                                <?php echo $acc_type; ?><br>
+                                                Acc Rates:
+                                                <?php echo $rate; ?> %
                                             </address>
                                         </div>
 
@@ -151,22 +194,32 @@ $client_id = $_SESSION['client_id'];
                                     <!-- Table row -->
                                     <div class="row">
                                         <div class="col-12 table-responsive">
-                                            <table class="table table-hover table-bordered table-striped">
+                                            <table class="table table-hover table-striped">
                                                 <thead>
                                                     <tr>
                                                         <th>Deposits</th>
                                                         <th>Withdrawals</th>
                                                         <th>Transfers</th>
+                                                        <!-- <th>Loan</th> -->
                                                         <th>Subtotal</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
 
                                                     <tr>
-                                                        <td>$ <?php echo $deposit; ?></td>
-                                                        <td>$ <?php echo $withdrawal; ?></td>
-                                                        <td>$ <?php echo $Transfer; ?></td>
-                                                        <td>$ <?php echo $money_in; ?></td>
+                                                        <td>
+                                                            <?php echo $deposit; ?> Frw
+                                                        </td>
+                                                        <td>
+                                                            <?php echo $withdrawal; ?> Frw
+                                                        </td>
+                                                        <td>
+                                                            <?php echo $Transfer; ?> Frw
+                                                        </td>
+                                                        <!-- <td> <?php echo $Loan; ?></td> -->
+                                                        <td>
+                                                            <?php echo $money_in; ?> Frw
+                                                        </td>
                                                     </tr>
 
                                                 </tbody>
@@ -187,29 +240,41 @@ $client_id = $_SESSION['client_id'];
                                         </div>
                                         <!-- /.col -->
                                         <div class="col-6">
-                                            <p class="lead">Balance Checked On : <?php echo date('d-M-Y'); ?></p>
+                                            <p class="lead">Balance Checked On :
+                                                <?php echo date('d-M-Y'); ?>
+                                            </p>
 
                                             <div class="table-responsive">
                                                 <table class="table table-bordered">
                                                     <tr>
                                                         <th style="width:50%">Funds In:</th>
-                                                        <td>$ <?php echo $deposit; ?></td>
+                                                        <td>
+                                                            <?php echo $deposit; ?> Frw
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Funds Out</th>
-                                                        <td>$ <?php echo $money_out; ?></td>
+                                                        <td>
+                                                            <?php echo $money_out; ?> Frw
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Sub Total:</th>
-                                                        <td>$ <?php echo $money_in; ?></td>
+                                                        <td>
+                                                            <?php echo $money_in; ?> Frw
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Banking Intrest:</th>
-                                                        <td>$ <?php echo $rate_amt; ?></td>
+                                                        <td>
+                                                            <?php echo $rate_amt; ?> Frw
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Total Balance:</th>
-                                                        <td>$ <?php echo $totalMoney; ?></td>
+                                                        <td>
+                                                            <?php echo $totalMoney; ?> Frw
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -222,7 +287,8 @@ $client_id = $_SESSION['client_id'];
                                     <div class="row no-print">
                                         <div class="col-12">
 
-                                            <button type="button" id="print" onclick="printContent('balanceSheet');" class="btn btn-success float-right" style="margin-right: 5px;">
+                                            <button type="button" id="print" onclick="printContent('balanceSheet');"
+                                                class="btn btn-success float-right" style="margin-right: 5px;">
                                                 <i class="fas fa-print"></i> Print
                                             </button>
                                         </div>
@@ -260,7 +326,7 @@ $client_id = $_SESSION['client_id'];
     <script src="dist/js/demo.js"></script>
     <!-- page script -->
     <script>
-        $(function() {
+        $(function () {
             $("#example1").DataTable();
             $('#example2').DataTable({
                 "paging": true,

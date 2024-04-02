@@ -202,6 +202,11 @@ if (isset($_POST['update_sacco'])) {
                                                     <?php echo $row->created_at; ?>
                                                 </td>
                                                 <td>
+                                                <a class="btn btn-primary btn-sm"
+                                                        href="pages_sacco_dashboard.php?saccoId=<?php echo $row->id; ?>">
+                                                        <i class="fas fa-eye"></i>
+                                                        View Details
+                                                    </a>
                                                     <button data-bs-toggle="modal"
                                                         data-bs-target="#updateModel<?= $row->id ?>"
                                                         class="btn btn-success btn-sm">
@@ -254,7 +259,6 @@ if (isset($_POST['update_sacco'])) {
                                                         <!-- <i class="fas fa-user-tie"></i> -->
                                                         Delete
                                                     </a>
-
 
                                                 </td>
 

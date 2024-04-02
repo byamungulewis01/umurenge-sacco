@@ -425,6 +425,7 @@ $stmt->close();
   <script>
     window.onload = function() {
 
+     
       var Piechart = new CanvasJS.Chart("PieChart", {
         exportEnabled: false,
         animationEnabled: true,
@@ -441,93 +442,83 @@ $stmt->close();
           toolTipContent: "{name}: <strong>{y}%</strong>",
           indexLabel: "{name} - {y}%",
           dataPoints: [{
-              y: <?php
-                  //return total number of accounts opened under savings acc type
-                  $client_id = $_SESSION['client_id'];
-                  $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Savings' AND client_id =? ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->bind_param('i', $client_id);
-                  $stmt->execute();
-                  $stmt->bind_result($savings);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $savings;
-                  ?>,
-              name: "Savings Acc",
-              exploded: true
-            },
+            y: <?php
+            //return total number of accounts opened under savings acc type
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =1";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($savings);
+            $stmt->fetch();
+            $stmt->close();
+            echo $savings;
+            ?>,
+            name: "Savings Acc",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of accounts opened under  Retirement  acc type
-                  $client_id  = $_SESSION['client_id'];
-                  $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Retirement' AND client_id =? ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->bind_param('i', $client_id);
-                  $stmt->execute();
-                  $stmt->bind_result($Retirement);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Retirement;
-                  ?>,
-              name: " Retirement Acc",
-              exploded: true
-            },
+          {
+            y: <?php
+            //return total number of accounts opened under  Retirement  acc type
+            $result = "SELECT count(*) FROM bankaccounts WHERE acc_type =2";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Retirement);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Retirement;
+            ?>,
+            name: " Retirement Acc",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of accounts opened under  Recurring deposit  acc type
-                  $client_id  = $_SESSION['client_id'];
-                  $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Recurring deposit' AND client_id =? ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->bind_param('i', $client_id);
-                  $stmt->execute();
-                  $stmt->bind_result($Recurring);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Recurring;
-                  ?>,
-              name: "Recurring deposit Acc ",
-              exploded: true
-            },
+          {
+            y: <?php
+            //return total number of accounts opened under  Recurring deposit  acc type
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =4 ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Recurring);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Recurring;
+            ?>,
+            name: "Recurring deposit Acc ",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of accounts opened under  Fixed Deposit Account deposit  acc type
-                  $client_id  = $_SESSION['client_id'];
-                  $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Fixed Deposit Account' AND client_id = ? ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->bind_param('i', $client_id);
-                  $stmt->execute();
-                  $stmt->bind_result($Fixed);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Fixed;
-                  ?>,
-              name: "Fixed Deposit Acc",
-              exploded: true
-            },
+          {
+            y: <?php
+            //return total number of accounts opened under  Fixed Deposit Account deposit  acc type
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =5 ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Fixed);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Fixed;
+            ?>,
+            name: "Fixed Deposit Acc",
+            exploded: true
+          },
 
-            {
-              y: <?php
-
-                  //return total number of accounts opened under  Current account deposit  acc type
-                  $client_id  = $_SESSION['client_id'];
-                  $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Current account' AND client_id =? ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->bind_param('i', $client_id);
-                  $stmt->execute();
-                  $stmt->bind_result($Current);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Current;
-                  ?>,
-              name: "Current Acc",
-              exploded: true
-            }
+          {
+            y: <?php
+            //return total number of accounts opened under  Current account deposit  acc type
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =7";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Current);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Current;
+            ?>,
+            name: "Current Acc",
+            exploded: true
+          }
           ]
         }]
       });
+
 
       var AccChart = new CanvasJS.Chart("AccountsPerAccountCategories", {
         exportEnabled: false,
@@ -548,7 +539,7 @@ $stmt->close();
               y: <?php
                   //return total number of transactions under  Withdrawals
                   $client_id  = $_SESSION['client_id'];
-                  $result = "SELECT count(*) FROM transactions WHERE  tr_type ='Withdrawal' AND client_id =? ";
+                  $result = "SELECT count(*) FROM transactions WHERE tr_type ='Withdrawal' AND client_id =? ";
                   $stmt = $mysqli->prepare($result);
                   $stmt->bind_param('i', $client_id);
                   $stmt->execute();

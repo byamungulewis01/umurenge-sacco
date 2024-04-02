@@ -23,6 +23,7 @@ if (isset($_POST['create_staff_account'])) {
     $email = $_POST['email'];
     $password = sha1(md5($_POST['password']));
     $sacco_id  = $_POST['sacco_id'];
+    
 
     $profile_pic  = $_FILES["profile_pic"]["name"];
     move_uploaded_file($_FILES["profile_pic"]["tmp_name"], "dist/img/" . $_FILES["profile_pic"]["name"]);

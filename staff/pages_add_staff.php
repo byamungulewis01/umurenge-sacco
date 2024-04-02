@@ -4,18 +4,27 @@ include('../conf/config.php');
 include('../conf/pdoconfig.php');
 include('conf/checklogin.php');
 check_login();
-$admin_id = $_SESSION['admin_id'];
+$staff_id = $_SESSION['staff_id'];
+$ret = "SELECT * FROM staff where staff_id = ?";
+$stmt = $mysqli->prepare($ret);
+$stmt->execute([$staff_id]); //ok
+$res = $stmt->get_result();
+while ($row = $res->fetch_object()) {
+  $staff_sacco = $row->sacco_id; //staff
+}
+
+
 //register new account
 if (isset($_POST['create_staff_account'])) {
     //Register  Staff
     $name = $_POST['name'];
-    $post = 'manager';
+    $post = $_POST['post'];
     $staff_number = $_POST['staff_number'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
     $password = sha1(md5($_POST['password']));
     $sex = $_POST['sex'];
-    $sacco_id = $_POST['sacco_id'];
+   
 
     $profile_pic = $_FILES["profile_pic"]["name"];
     move_uploaded_file($_FILES["profile_pic"]["tmp_name"], "dist/img/" . $_FILES["profile_pic"]["name"]);
@@ -25,7 +34,7 @@ if (isset($_POST['create_staff_account'])) {
         $query = "INSERT INTO staff (post,name, staff_number, phone, email, password, sex, profile_pic,sacco_id) VALUES (?,?,?,?,?,?,?,?,?)";
         $stmt = $mysqli->prepare($query);
         //bind paramaters
-        $rc = $stmt->bind_param('ssssssssi',$post, $name, $staff_number, $phone, $email, $password, $sex, $profile_pic, $sacco_id);
+        $rc = $stmt->bind_param('ssssssssi',$post, $name, $staff_number, $phone, $email, $password, $sex, $profile_pic, $staff_sacco);
         $stmt->execute();
 
         if ($stmt) {
@@ -61,7 +70,7 @@ if (isset($_POST['create_staff_account'])) {
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Create Manager Account</h1>
+                            <h1>Create Staff Account</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -90,37 +99,27 @@ if (isset($_POST['create_staff_account'])) {
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-6 form-group">
-                                                <label for="exampleInputEmail1">Manager Name</label>
+                                                <label for="exampleInputEmail1">Staff Name</label>
                                                 <input type="text" name="name" required class="form-control"
                                                     id="exampleInputEmail1">
                                             </div>
                                             <div class="col-md-6 form-group">
-                                                <label for="exampleInputPassword1">Sacco</label>
-                                                <?php
-                                                $ret = "SELECT * FROM  sacco";
-                                                $stmt = $mysqli->prepare($ret);
-                                                $stmt->execute(); //ok
-                                                $res = $stmt->get_result();
-                                                ?>
-                                                <select class="form-control" name="sacco_id">
-                                                    <option value="" selected disabled>Select Sacco</option>
-                                                    <?php while ($row = $res->fetch_object()) { ?>
-                                                        <option value="<?= $row->id ?>">
-                                                            <?= $row->name ?>
-                                                        </option>
-                                                    <?php } ?>
+                                                <label for="exampleInputPassword1">Post</label>
+                                                <select class="form-control" name="post">
+                                                        <option value="teller">Teller</option>
+                                                        <option value="loan_officer">Loan Officer</option>
                                                 </select>
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class=" col-md-6 form-group">
-                                                <label for="inputPhone">Manager Phone Number</label>
+                                                <label for="inputPhone">Staff Phone Number</label>
                                                 <input type="text" minlength="10" maxlength="10" name="phone" required
                                                     class="form-control phone" id="inputPhone">
                                             </div>
                                             <div class=" col-md-6 form-group">
-                                                <label for="gender">Manager Gender</label>
+                                                <label for="gender">Staff Gender</label>
                                                 <select class="form-control" id="gender" name="sex">
                                                     <option>Select Gender</option>
                                                     <option>Female</option>
@@ -131,19 +130,19 @@ if (isset($_POST['create_staff_account'])) {
 
                                         <div class="row">
                                             <div class=" col-md-6 form-group">
-                                                <label for="exampleInputEmail1">Manager Email</label>
+                                                <label for="exampleInputEmail1">Staff Email</label>
                                                 <input type="email" name="email" required class="form-control"
                                                     id="exampleInputEmail1">
                                             </div>
                                             <div class=" col-md-6 form-group">
-                                                <label for="exampleInputPassword1">Manager Password</label>
+                                                <label for="exampleInputPassword1">Staff Password</label>
                                                 <input type="password" name="password" required class="form-control"
                                                     id="exampleInputEmail1">
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 form-group">
-                                                <label for="exampleInputFile">Manager Profile Picture</label>
+                                                <label for="exampleInputFile">Staff Profile Picture</label>
                                                 <div class="input-group">
                                                     <div class="custom-file">
                                                         <input type="file" name="profile_pic" class="custom-file-input"
@@ -157,23 +156,23 @@ if (isset($_POST['create_staff_account'])) {
                                                 </div>
                                             </div>
                                             <div class="col-md-6 form-group">
-                                                <label for="exampleInputPassword1">Manager Number</label>
+                                                <label for="exampleInputPassword1">Staff Number</label>
                                                 <?php
                                                 //PHP function to generate random passenger number
-                                                $stmt = $DB_con->prepare("SELECT * FROM  staff");
+                                                $stmt = $DB_con->prepare("SELECT * FROM staff");
                                                 $stmt->execute();
                                                 $row = $stmt->rowCount();
                                                 $strleft = str_pad($row + 1, 3, '0', STR_PAD_LEFT);
                                                 ?>
                                                 <input type="text" readonly name="staff_number"
-                                                    value="MANAGER-<?php echo $strleft; ?>" class="form-control"
+                                                    value="STAFF-<?php echo $strleft; ?>" class="form-control"
                                                     id="exampleInputPassword1">
                                             </div>
                                             <div class="row mt-3">
                                                 <div class="col-md-12 form-group pl-3">
                                                     <button type="submit" name="create_staff_account"
                                                         class="btn btn-success">Add
-                                                        Manager</button>
+                                                        Staff</button>
                                                 </div>
                                             </div>
                                         </div>

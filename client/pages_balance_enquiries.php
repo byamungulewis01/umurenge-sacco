@@ -60,7 +60,6 @@ $client_id = $_SESSION['client_id'];
                       <th>ID No.</th>
                       <th>Contact</th>
                       <th>Email</th>
-                      <th>Address</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -85,7 +84,6 @@ $client_id = $_SESSION['client_id'];
                         <td><?php echo $row->national_id; ?></td>
                         <td><?php echo $row->phone; ?></td>
                         <td><?php echo $row->email; ?></td>
-                        <td><?php echo $row->address; ?></td>
                         <td>
                           <a class="btn btn-success btn-sm" href="pages_view_client_bank_acc.php?client_number=<?php echo $row->client_number; ?>&client_id=<?php echo $row->client_id; ?>">
                             <i class="fas fa-eye"></i>

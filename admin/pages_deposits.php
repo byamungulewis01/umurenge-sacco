@@ -65,7 +65,7 @@ $admin_id = $_SESSION['admin_id'];
                   <tbody>
                     <?php
                     //fetch all iB_Accs
-                    $ret = "SELECT * FROM  bankaccounts ";
+                    $ret = "SELECT * FROM  bankaccounts WHERE acc_status = 'Active'";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute(); //ok
                     $res = $stmt->get_result();

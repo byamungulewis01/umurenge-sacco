@@ -1,8 +1,8 @@
 <?php
 session_start();
-include('../conf/config.php');
+include '../conf/config.php';
 
-include('conf/checklogin.php');
+include 'conf/checklogin.php';
 check_login();
 $client_id = $_SESSION['client_id'];
 ?>
@@ -10,16 +10,16 @@ $client_id = $_SESSION['client_id'];
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<?php include("dist/_partials/head.php"); ?>
+<?php include "dist/_partials/head.php";?>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
   <div class="wrapper">
     <!-- Navbar -->
-    <?php include("dist/_partials/nav.php"); ?>
+    <?php include "dist/_partials/nav.php";?>
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
-    <?php include("dist/_partials/sidebar.php"); ?>
+    <?php include "dist/_partials/sidebar.php";?>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -60,50 +60,58 @@ $client_id = $_SESSION['client_id'];
                       <th>Acc. Type</th>
                       <th>Acc. Owner</th>
                       <th>Date Opened</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php
-                    //fetch all iB_Accs
-                    $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM  bankaccounts WHERE client_id =? ";
-                    $stmt = $mysqli->prepare($ret);
-                    $stmt->bind_param('i', $client_id);
-                    $stmt->execute(); //ok
-                    $res = $stmt->get_result();
-                    $cnt = 1;
-                    while ($row = $res->fetch_object()) {
-                      //Trim Timestamp to DD-MM-YYYY : H-M-S
-                      $dateOpened = $row->created_at;
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
-                      $stmt2->execute(); //ok
-                      $res2 = $stmt2->get_result();
-                      while ($data = $res2->fetch_object()) {
-                        $rate = $data->rate;
-                        $acc_type = $data->name;
-                      }
-                    ?>
+//fetch all iB_Accs
+$client_id = $_SESSION['client_id'];
+$ret = "SELECT * FROM  bankaccounts WHERE client_id =? ";
+$stmt = $mysqli->prepare($ret);
+$stmt->bind_param('i', $client_id);
+$stmt->execute(); //ok
+$res = $stmt->get_result();
+$cnt = 1;
+while ($row = $res->fetch_object()) {
+    //Trim Timestamp to DD-MM-YYYY : H-M-S
+    $dateOpened = $row->created_at;
+    $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
+    $stmt2->execute(); //ok
+    $res2 = $stmt2->get_result();
+    while ($data = $res2->fetch_object()) {
+        $rate = $data->rate;
+        $acc_type = $data->name;
+    }
+    ?>
 
-                      <tr <?php if($row->acc_status == 'Inactive') {echo "style='background-color:brown; color :azure;'";} ?>>
+                      <tr <?php if ($row->acc_status == 'Inactive') {echo "style='background-color:brown; color :azure;'";}?>>
                       <td><?php echo $cnt; ?></td>
                         <td><?php echo $row->acc_name; ?></td>
-                        <td><?php echo $row->account_number; ?></td>
-                        <td><?= $rate ?></td>
-                        <td><?= $acc_type ?></td>
+                        <td><?= $row->account_id ?><?php echo $row->account_number; ?></td>
+                        <td><?=$rate?></td>
+                        <td><?=$acc_type?></td>
                         <td>
                           <?php
-                          $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
-                          $stmt2->execute(); //ok
-                          $res2 = $stmt2->get_result();
-                          while ($data = $res2->fetch_object()) {
-                            echo $data->name;
-                          }
-                          ?>
+$stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
+    $stmt2->execute(); //ok
+    $res2 = $stmt2->get_result();
+    while ($data = $res2->fetch_object()) {
+        echo $data->name;
+    }
+    ?>
                         </td>
                         <td><?php echo date("d-M-Y", strtotime($dateOpened)); ?></td>
+                        <td>
+                        <?php if ($row->acc_status == 'Inactive') {?>
+                          <span class="badge badge-warning text-white">Inactive</span>
+                          <?php } else {?>
+                          <span class="badge badge-success">Active</span>
+                            <?php }?>
+                        </td>
                       </tr>
                     <?php $cnt = $cnt + 1;
-                    } ?>
+}?>
                     </tfoot>
                 </table>
               </div>
@@ -118,7 +126,7 @@ $client_id = $_SESSION['client_id'];
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <?php include("dist/_partials/footer.php"); ?>
+    <?php include "dist/_partials/footer.php";?>
 
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">

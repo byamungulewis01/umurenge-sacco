@@ -1,13 +1,35 @@
 <?php
 session_start();
 include('../conf/config.php');
-
 include('conf/checklogin.php');
 check_login();
-$client_id = $_SESSION['client_id'];
+$staff_id = $_SESSION['staff_id'];
+$ret = "SELECT * FROM staff where staff_id = ?";
+$stmt = $mysqli->prepare($ret);
+$stmt->execute([$staff_id]); //ok
+$res = $stmt->get_result();
+while ($row = $res->fetch_object()) {
+    $staff_sacco = $row->sacco_id; //staff
+}
+
+//roll back transaction
+if (isset($_GET['request_id'])) {
+  $id = intval($_GET['request_id']);
+  $adn = "UPDATE  transactions SET tr_status = 'Success' WHERE tr_id = ?";
+  $stmt = $mysqli->prepare($adn);
+  $stmt->bind_param('i', $id);
+  $stmt->execute();
+  $stmt->close();
+
+  if ($stmt) {
+    $info = "Transaction Requested Approved";
+  } else {
+    $err = "Try Again Later";
+  }
+}
 
 ?>
-<!-- Log on to alphacodecamp.com.ng for more projects! -->
+
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -29,85 +51,91 @@ $client_id = $_SESSION['client_id'];
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Funds Transfers</h1>
+              <h1>Transaction Requests</h1>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="pages_transfers">iBank Finances</a></li>
-                <li class="breadcrumb-item active">Transfers</li>
+                <li class="breadcrumb-item"><a href="pages_transactions_request.php">Transaction Request</a></li>
+                <li class="breadcrumb-item active">Transactions</li>
               </ol>
             </div>
           </div>
         </div><!-- /.container-fluid -->
       </section>
-      <!-- Log on to alphacodecamp.com.ng for more projects! -->
+
       <!-- Main content -->
       <section class="content">
         <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Select on any account to transfer funds from</h3>
+                <h3 class="card-title">Select on any action options to manage Transactions</h3>
               </div>
               <div class="card-body">
                 <table id="example1" class="table table-hover table-bordered table-striped">
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>Name</th>
-                      <th>Acc Number</th>
-                      <th>Rate</th>
-                      <th>Acc Type</th>
-                      <th>Acc Owner</th>
+                      <th>Transaction Code</th>
+                      <th>Account No.</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Acc. Owner</th>
+                      <th>Timestamp</th>
                       <th>Action</th>
+
                     </tr>
                   </thead>
                   <tbody>
                     <?php
-                    //fetch all iB_Accs
-                    $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM  bankaccounts WHERE client_id =? AND acc_status = 'Active'";
+                    //Get latest transactions 
+                    $ret = "SELECT * FROM `transactions` WHERE tr_status = 'Request' AND sacco_id = ? ORDER BY `transactions`.`created_at` DESC ";
                     $stmt = $mysqli->prepare($ret);
-                    $stmt->bind_param('i', $client_id);
-                    $stmt->execute(); //ok
+                    $stmt->execute([$staff_sacco]); //ok
                     $res = $stmt->get_result();
                     $cnt = 1;
                     while ($row = $res->fetch_object()) {
-                      //Trim Timestamp to DD-MM-YYYY : H-M-S
-                      $dateOpened = $row->created_at;
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
-                      $stmt2->execute(); //ok
-                      $res2 = $stmt2->get_result();
-                      while ($data = $res2->fetch_object()) {
-                        $rate = $data->rate;
-                        $acc_type = $data->name;
+                            $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id =? ");
+                            $stmt2->execute([$row->account_id]); //ok
+                            $resul = $stmt2->get_result();
+                            while ($row1 = $resul->fetch_object()) {
+                                $acc = $row1->account_number;
+                                $holder = $row1->acc_name;
+                            }
+
+
+                      $transTstamp = $row->created_at;
+                      //Perfom some lil magic here
+                      if ($row->tr_type == 'Deposit') {
+                        $alertClass = "<span class='badge badge-success'>$row->tr_type</span>";
+                      } elseif ($row->tr_type == 'Withdrawal') {
+                        $alertClass = "<span class='badge badge-danger'>$row->tr_type</span>";
+                      }elseif ($row->tr_type == 'Loan') {
+                        $alertClass = "<span class='badge badge-info'>$row->tr_type</span>";
+                      } else {
+                        $alertClass = "<span class='badge badge-warning'>$row->tr_type</span>";
                       }
+
+                    
+
                     ?>
 
                       <tr>
                         <td><?php echo $cnt; ?></td>
-                        <td><?php echo $row->acc_name; ?></td>
-                        <td><?php echo  $row->account_id . $row->account_number; ?></td>
-                        <td><?php echo $rate; ?>%</td>
-                        <td><?php echo $acc_type; ?></td>
-                        <td><?php
-                            $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
-                            $stmt2->execute(); //ok
-                            $res2 = $stmt2->get_result();
-                            while ($data = $res2->fetch_object()) {
-                              echo $data->name;
-                            }
-                            ?></td>
+                        <td><?php echo $row->tr_code; ?></a></td>
+                        <td><?php echo $acc; ?></td>
+                        <td><?php echo $alertClass; ?></td>
+                        <td><?php echo $row->transaction_amt; ?></td>
+                        <td><?php echo $holder; ?></td>
+                        <td><?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?></td>
                         <td>
-                          <a class="btn btn-success btn-sm" href="pages_transfer_money.php?account_id=<?php echo $row->account_id; ?>&account_number=<?php echo $row->account_number; ?>&client_id=<?php echo $row->client_id; ?>">
-                            <i class="fas fa-money-bill-alt"></i>
-                            <!-- <i class="fas fa-upload"></i> -->
-                            Transfer Money
+                          <a class="btn btn-success btn-sm" href="pages_transactions_request.php?request_id=<?php echo $row->tr_id; ?>">
+                            <!-- <i class="fas fa-power-off"></i> -->
+                           Approve Request
                           </a>
 
                         </td>
-
                       </tr>
                     <?php $cnt = $cnt + 1;
                     } ?>
@@ -119,7 +147,7 @@ $client_id = $_SESSION['client_id'];
             <!-- /.card -->
           </div>
           <!-- /.col -->
-        </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
+        </div>
         <!-- /.row -->
       </section>
       <!-- /.content -->

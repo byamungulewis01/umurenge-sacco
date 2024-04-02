@@ -63,7 +63,7 @@ $client_id = $_SESSION['client_id'];
                                     <h3 class="card-title">Select on any action options to check your account balances</h3>
                                 </div>
                                 <div class="card-body">
-                                    <table id="example1" class="table table-hover table-bordered table-striped">
+                                <table id="example1" class="table table-hover table-bordered table-striped">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -79,8 +79,8 @@ $client_id = $_SESSION['client_id'];
                                         <tbody>
                                             <?php
                                             //fetch all iB_Accs Which belongs to selected client
-                                            $client_id = $_SESSION['client_id'];
-                                            $ret = "SELECT * FROM  bankaccounts WHERE client_id = ?";
+                                            $client_id = $_GET['client_id'];
+                                            $ret = "SELECT * FROM  bankaccounts WHERE client_id = ? AND acc_status = 'Active'";
                                             $stmt = $mysqli->prepare($ret);
                                             $stmt->bind_param('i', $client_id);
                                             $stmt->execute(); //ok
@@ -90,18 +90,48 @@ $client_id = $_SESSION['client_id'];
                                                 //Trim Timestamp to DD-MM-YYYY : H-M-S
                                                 $dateOpened = $row->created_at;
 
-                                            ?>
+                                                $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
+                                                $stmt2->execute(); //ok
+                                                $res2 = $stmt2->get_result();
+                                                while ($data = $res2->fetch_object()) {
+                                                    $rate = $data->rate;
+                                                    $acc_type = $data->name;
+                                                }
+
+                                                ?>
 
                                                 <tr>
-                                                    <td><?php echo $cnt; ?></td>
-                                                    <td><?php echo $row->acc_name; ?></td>
-                                                    <td><?php echo $row->account_number; ?></td>
-                                                    <td><?php echo $row->acc_rates; ?>%</td>
-                                                    <td><?php echo $row->acc_type; ?></td>
-                                                    <td><?php echo $row->client_name; ?></td>
-                                                    <td><?php echo date("d-M-Y", strtotime($dateOpened)); ?></td>
                                                     <td>
-                                                        <a class="btn btn-success btn-sm" href="pages_check_client_acc_balance.php?account_id=<?php echo $row->account_id; ?>&acccount_number=<?php echo $row->account_number; ?>">
+                                                        <?php echo $cnt; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $row->acc_name; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $row->account_number; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $rate; ?>%
+                                                    </td>
+                                                    <td>
+                                                        <?php echo $acc_type; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php
+                                                        $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
+                                                        $stmt2->execute(); //ok
+                                                        $res2 = $stmt2->get_result();
+                                                        while ($data = $res2->fetch_object()) {
+                                                            echo $data->name;
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo date("d-M-Y", strtotime($dateOpened)); ?>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-success btn-sm"
+                                                            href="pages_check_client_acc_balance.php?account_id=<?php echo $row->account_id; ?>&acccount_number=<?php echo $row->account_number; ?>">
                                                             <i class="fas fa-eye"></i>
                                                             <i class="fas fa-money-bill-alt"></i>
                                                             Check Balance
@@ -110,7 +140,7 @@ $client_id = $_SESSION['client_id'];
                                                     </td>
 
                                                 </tr>
-                                            <?php $cnt = $cnt + 1;
+                                                <?php $cnt = $cnt + 1;
                                             } ?>
                                             </tfoot>
                                     </table>

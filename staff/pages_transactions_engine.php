@@ -90,16 +90,12 @@ if (isset($_GET['RollBack_Transaction'])) {
                   <tbody>
                     <?php
                     //Get latest transactions 
-                    $ret = "SELECT * FROM `transactions` WHERE sacco_id = ? ORDER BY `transactions`.`created_at` DESC ";
+                    $ret = "SELECT * FROM `transactions` WHERE tr_status = 'Success' AND sacco_id = ? ORDER BY `transactions`.`created_at` DESC ";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute([$staff_sacco]); //ok
                     $res = $stmt->get_result();
                     $cnt = 1;
                     while ($row = $res->fetch_object()) {
-                      /* Trim Transaction Timestamp to 
-                            *  User Uderstandable Formart  DD-MM-YYYY :
-                            */
-
                             $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id =? ");
                             $stmt2->execute([$row->account_id]); //ok
                             $resul = $stmt2->get_result();

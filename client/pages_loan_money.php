@@ -1,61 +1,34 @@
 <?php
 session_start();
 include '../conf/config.php';
-
 include 'conf/checklogin.php';
 check_login();
 $client_id = $_SESSION['client_id'];
 
-if (isset($_POST['deposit'])) {
+//register new account
+
+if (isset($_POST['loan'])) {
     $tr_code = $_POST['tr_code'];
     $account_id = $_GET['account_id'];
-    //$acc_amount  = $_POST['acc_amount'];
-    $tr_type  = $_POST['tr_type'];
+    $tr_type = $_POST['tr_type'];
     $tr_status = $_POST['tr_status'];
     $transaction_amt = $_POST['transaction_amt'];
     $sacco_id = $_POST['sacco_id'];
 
-    //Few fields to hold funds transfers
-    $receiving_acc_no = $_POST['receiving_acc_no'];
- 
-    $result = "SELECT SUM(transaction_amt) FROM  transactions  WHERE account_id=?";
-    $stmt = $mysqli->prepare($result);
-    $stmt->bind_param('i', $account_id);
-    $stmt->execute();
-    $stmt->bind_result($amt);
-    $stmt->fetch();
-    $stmt->close();
+    //Insert Captured information to a database table
+    $query = "INSERT INTO transactions (tr_code, account_id, tr_type, tr_status, transaction_amt,sacco_id ,client_id) VALUES (?,?,?,?,?,?,?)";
 
+    $stmt = $mysqli->prepare($query);
+    $stmt->execute([$tr_code, $account_id, $tr_type, $tr_status, $transaction_amt, $sacco_id, $_GET['client_id']]);
 
-
-
-    if ($transaction_amt > $amt) {
-        $err  =  "You Do Not Have Sufficient Funds In Your Account For Transfer Your Current Account Balance Is $amt";
+    //declare a varible which will be passed to alert function
+    if ($stmt) {
+        $success = "Loan Requested Successfully";
     } else {
-
-
-        //Insert Captured information to a database table
-        $query = "INSERT INTO transactions (tr_code, account_id, tr_type, tr_status, transaction_amt, receiving_acc_id,sacco_id,client_id) VALUES (?,?,?,?,?,?,?,?)";
-
-        $stmt = $mysqli->prepare($query);
-
-        //bind paramaters
-        $rc = $stmt->bind_param('ssssssii', $tr_code, $account_id, $tr_type, $tr_status, $transaction_amt, $receiving_acc_no, $sacco_id,$_GET['client_id']);
-
-        $stmt->execute();
-
-
-        //declare a varible which will be passed to alert function
-        if ($stmt) {
-            $success = "Money Transfered";
-        } else {
-            $err = "Please Try Again Or Try Later";
-        }
+        $err = "Please Try Again Or Try Later";
     }
 }
-
 ?>
-<!-- Log on to alphacodecamp.com.ng for more projects! -->
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -80,6 +53,7 @@ $stmt->execute(); //ok
 $res = $stmt->get_result();
 $cnt = 1;
 while ($row = $res->fetch_object()) {
+
     $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
     $stmt2->execute(); //ok
     $res2 = $stmt2->get_result();
@@ -96,8 +70,8 @@ while ($row = $res->fetch_object()) {
         $national_id = $data3->national_id;
         $phone = $data3->phone;
         $sacco_id = $data3->sacco_id;
-
     }
+
     ?>
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
@@ -105,13 +79,13 @@ while ($row = $res->fetch_object()) {
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1>Transfer Money</h1>
+                                <h1>Request Loan</h1>
                             </div>
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item"><a href="pages_dashboard.php">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="pages_transfer_money.php">Finances</a></li>
-                                    <li class="breadcrumb-item"><a href="pages_transfer_money.php">Transfer</a></li>
+                                    <li class="breadcrumb-item"><a href="pages_deposits">iBank Finances</a></li>
+                                    <li class="breadcrumb-item"><a href="pages_deposits">Loan</a></li>
                                     <li class="breadcrumb-item active"><?php echo $row->acc_name; ?></li>
                                 </ol>
                             </div>
@@ -156,7 +130,7 @@ while ($row = $res->fetch_object()) {
                                                 </div>
                                                 <div class=" col-md-4 form-group">
                                                     <label for="exampleInputPassword1">Account Number</label>
-                                                    <input type="text" readonly value="<?php echo $row->account_id . $row->account_number; ?>" name="account_number" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly value="<?php echo $row->account_number; ?>" name="account_number" required class="form-control" id="exampleInputEmail1">
                                                 </div>
                                                 <div class=" col-md-4 form-group">
                                                     <label for="exampleInputEmail1">Account Type | Category</label>
@@ -174,51 +148,18 @@ while ($row = $res->fetch_object()) {
     ?>
                                                     <input type="text" name="tr_code" readonly value="<?php echo $_transcode; ?>" required class="form-control" id="exampleInputEmail1">
                                                 </div>
-
                                                 <div class=" col-md-6 form-group">
-                                                    <label for="exampleInputPassword1">Amount Transfered(Frw)</label>
-                                                    <input type="text" name="transaction_amt" required class="form-control" id="exampleInputEmail1">
-                                                    <input type="hidden" name="sacco_id" value="<?= $sacco_id ?>">
+                                                    <label for="exampleInputPassword1">Amount</label>
+                                                    <input type="number" min="1" autofocus autocomplete="off" name="transaction_amt" required class="form-control" id="exampleInputEmail1">
                                                 </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class=" col-md-4 form-group">
-                                                    <label for="exampleInputPassword1">Receiving Account Number</label>
-                                                    <select name="receiving_acc_no" onChange="getiBankAccs(this.value);" required class="form-control">
-                                                        <option>Select Receiving Account</option>
-                                                        <?php
-//fetch all iB_Accs
-    $ret = "SELECT * FROM  bankaccounts WHERE account_number != ?";
-    $stmt = $mysqli->prepare($ret);
-    $stmt->execute([$row->account_number]); //ok
-    $res = $stmt->get_result();
-    $cnt = 1;
-    while ($row = $res->fetch_object()) {
-
-        ?>
-                                                            <option><?php echo $row->account_number; ?></option>
-
-                                                        <?php }?>
-
-                                                    </select>
-                                                </div>
-                                                <div class=" col-md-4 form-group">
-                                                    <label for="exampleInputPassword1">Receiving Account Name</label>
-                                                    <input type="text" name="receiving_acc_name" required class="form-control" id="ReceivingAcc">
-                                                </div>
-                                                <div class=" col-md-4 form-group">
-                                                    <label for="exampleInputPassword1">Receiving Account Holder</label>
-                                                    <input type="text" name="receiving_acc_holder" required class="form-control" id="AccountHolder">
-                                                </div>
-
                                                 <div class=" col-md-4 form-group" style="display:none">
                                                     <label for="exampleInputPassword1">Transaction Type</label>
-                                                    <input type="text" name="tr_type" value="Transfer" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" name="tr_type" value="Loan" required class="form-control" id="exampleInputEmail1">
                                                 </div>
                                                 <div class=" col-md-4 form-group" style="display:none">
                                                     <label for="exampleInputPassword1">Transaction Status</label>
-                                                    <input type="text" name="tr_status" value="Success " required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" name="tr_status" value="Request" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="hidden" name="sacco_id" value="<?=$sacco_id?>" />
                                                 </div>
 
                                             </div>
@@ -226,7 +167,7 @@ while ($row = $res->fetch_object()) {
                                         </div>
                                         <!-- /.card-body -->
                                         <div class="card-footer">
-                                            <button type="submit" name="deposit" class="btn btn-success">Transfer Funds</button>
+                                            <button type="submit" name="loan" class="btn btn-success">Loan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -234,7 +175,7 @@ while ($row = $res->fetch_object()) {
                             </div><!-- /.container-fluid -->
                 </section>
                 <!-- /.content -->
-            </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
+            </div>
         <?php }?>
         <!-- /.content-wrapper -->
         <?php include "dist/_partials/footer.php";?>

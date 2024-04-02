@@ -1,39 +1,39 @@
 <?php
 session_start();
-include('../conf/config.php');
-include('conf/checklogin.php');
+include '../conf/config.php';
+include 'conf/checklogin.php';
 check_login();
 $staff_id = $_SESSION['staff_id'];
 //fire staff
 if (isset($_GET['fireStaff'])) {
-  $id = intval($_GET['fireStaff']);
-  $adn = "DELETE FROM  staff  WHERE staff_id = ?";
-  $stmt = $mysqli->prepare($adn);
-  $stmt->bind_param('i', $id);
-  $stmt->execute();
-  $stmt->close();
+    $id = intval($_GET['fireStaff']);
+    $adn = "DELETE FROM  staff  WHERE staff_id = ?";
+    $stmt = $mysqli->prepare($adn);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $stmt->close();
 
-  if ($stmt) {
-    $info = "Staff Account Deleted";
-  } else {
-    $err = "Try Again Later";
-  }
+    if ($stmt) {
+        $info = "Staff Account Deleted";
+    } else {
+        $err = "Try Again Later";
+    }
 }
 ?>
 
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<?php include("dist/_partials/head.php"); ?>
+<?php include "dist/_partials/head.php";?>
 
 <body class="hold-transition sidebar-mini">
   <div class="wrapper">
     <!-- Navbar -->
-    <?php include("dist/_partials/nav.php"); ?>
+    <?php include "dist/_partials/nav.php";?>
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
-    <?php include("dist/_partials/sidebar.php"); ?>
+    <?php include "dist/_partials/sidebar.php";?>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -68,6 +68,7 @@ if (isset($_GET['fireStaff'])) {
                   <thead>
                     <tr>
                       <th>#</th>
+                      <th>Post</th>
                       <th>Name</th>
                       <th>Staff Number</th>
                       <th>Contact</th>
@@ -78,18 +79,28 @@ if (isset($_GET['fireStaff'])) {
                   </thead>
                   <tbody>
                     <?php
-                    //fetch all iBank staffs
-                    $ret = "SELECT * FROM  staff ORDER BY RAND() ";
-                    $stmt = $mysqli->prepare($ret);
-                    $stmt->execute(); //ok
-                    $res = $stmt->get_result();
-                    $cnt = 1;
-                    while ($row = $res->fetch_object()) {
+//fetch all iBank staffs
+$ret = "SELECT * FROM  staff WHERE post != 'manager' ORDER BY staff_id DESC";
+$stmt = $mysqli->prepare($ret);
+$stmt->execute(); //ok
+$res = $stmt->get_result();
+$cnt = 1;
+while ($row = $res->fetch_object()) {
 
-                    ?>
+    ?>
 
                       <tr>
                         <td><?php echo $cnt; ?></td>
+                          <td><?php
+                        if ($row->post == 'teller') {
+                                echo 'A Teller';
+                            } else {
+                                # code...
+                                echo 'Loan Officer';
+                            }
+
+                            ?>
+                        </td>
                         <td><?php echo $row->name; ?></td>
                         <td><?php echo $row->staff_number; ?></td>
                         <td><?php echo $row->phone; ?></td>
@@ -113,7 +124,7 @@ if (isset($_GET['fireStaff'])) {
 
                       </tr>
                     <?php $cnt = $cnt + 1;
-                    } ?>
+}?>
                     </tfoot>
                 </table>
               </div>
@@ -128,7 +139,7 @@ if (isset($_GET['fireStaff'])) {
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <?php include("dist/_partials/footer.php"); ?>
+    <?php include "dist/_partials/footer.php";?>
 
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">

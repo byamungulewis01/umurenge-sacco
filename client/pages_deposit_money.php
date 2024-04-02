@@ -1,95 +1,85 @@
 <?php
 session_start();
-include('../conf/config.php');
+include '../conf/config.php';
 
-include('conf/checklogin.php');
+include 'conf/checklogin.php';
 check_login();
 
 if (isset($_POST['deposit'])) {
     $tr_code = $_POST['tr_code'];
     $account_id = $_GET['account_id'];
-    $acc_name = $_POST['acc_name'];
-    $account_number = $_GET['account_number'];
-    $acc_type = $_POST['acc_type'];
-    //$acc_amount  = $_POST['acc_amount'];
     $tr_type = $_POST['tr_type'];
     $tr_status = $_POST['tr_status'];
-    $client_id = $_GET['client_id'];
-    $client_name = $_POST['client_name'];
-    $client_national_id = $_POST['client_national_id'];
     $transaction_amt = $_POST['transaction_amt'];
-    $client_phone = $_POST['client_phone'];
-    //$acc_new_amt = $_POST['acc_new_amt'];
+    $pay_mobile = $_POST['pay_mobile'];
+    $sacco_id = $_POST['sacco_id'];
 
-    //Notication
-    $notification_details = "$client_name Has Deposited $ $transaction_amt To Bank Account $account_number";
+    try {
 
+        deposit($transaction_amt, $pay_mobile);
 
-    //Insert Captured information to a database table
-    $query = "INSERT INTO transactions (tr_code, account_id, acc_name, account_number, acc_type,  tr_type, tr_status, client_id, client_name, client_national_id, transaction_amt, client_phone) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-    $notification = "INSERT INTO  notifications (notification_details) VALUES (?)";
+        //Insert Captured information to a database table
+        $query = "INSERT INTO transactions (tr_code, account_id, tr_type, tr_status, transaction_amt,sacco_id,client_id) VALUES (?,?,?,?,?,?,?)";
 
-    $stmt = $mysqli->prepare($query);
-    $notification_stmt = $mysqli->prepare($notification);
+        $stmt = $mysqli->prepare($query);
+        $stmt->execute([$tr_code, $account_id, $tr_type, $tr_status, $transaction_amt, $sacco_id, $_GET['client_id']]);
 
-    //bind paramaters
-    $rc = $notification_stmt->bind_param('s', $notification_details);
-    $rc = $stmt->bind_param('ssssssssssss', $tr_code, $account_id, $acc_name, $account_number, $acc_type, $tr_type, $tr_status, $client_id, $client_name, $client_national_id, $transaction_amt, $client_phone);
-    $stmt->execute();
-    $notification_stmt->execute();
-
-
-    //declare a varible which will be passed to alert function
-    if ($stmt && $notification_stmt) {
-        $success = "Money Deposited";
-    } else {
+        //declare a varible which will be passed to alert function
+        if ($stmt) {
+            $success = "Money Deposited";
+        } else {
+            $err = "Please Try Again Or Try Later";
+        }
+    } catch (\Throwable $th) {
+        //throw $th;
         $err = "Please Try Again Or Try Later";
+
     }
 }
 ?>
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<?php include("dist/_partials/head.php"); ?>
+<?php include "dist/_partials/head.php";?>
 <!-- Log on to alphacodecamp.com.ng for more projects! -->
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
     <div class="wrapper">
         <!-- Navbar -->
-        <?php include("dist/_partials/nav.php"); ?>
+        <?php include "dist/_partials/nav.php";?>
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <?php include("dist/_partials/sidebar.php"); ?>
-        
+        <?php include "dist/_partials/sidebar.php";?>
+
         <!-- Content Wrapper. Contains page content -->
         <?php
-        $account_id = $_GET['account_id'];
-        $ret = "SELECT * FROM  bankaccounts WHERE account_id = ? ";
-        $stmt = $mysqli->prepare($ret);
-        $stmt->bind_param('i', $account_id);
-        $stmt->execute(); //ok
-        $res = $stmt->get_result();
-        $cnt = 1;
-        while ($row = $res->fetch_object()) {
-            $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
-            $stmt2->execute(); //ok
-            $res2 = $stmt2->get_result();
-            while ($data = $res2->fetch_object()) {
-                $rate = $data->rate;
-                $acc_type = $data->name;
-            }
+$account_id = $_GET['account_id'];
+$ret = "SELECT * FROM  bankaccounts WHERE account_id = ? ";
+$stmt = $mysqli->prepare($ret);
+$stmt->bind_param('i', $account_id);
+$stmt->execute(); //ok
+$res = $stmt->get_result();
+$cnt = 1;
+while ($row = $res->fetch_object()) {
+    $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
+    $stmt2->execute(); //ok
+    $res2 = $stmt2->get_result();
+    while ($data = $res2->fetch_object()) {
+        $rate = $data->rate;
+        $acc_type = $data->name;
+    }
 
-            $stmt3 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
-            $stmt3->execute(); //ok
-            $res3 = $stmt3->get_result();
-            while ($data3 = $res3->fetch_object()) {
-                $name = $data3->name;
-                $national_id = $data3->national_id;
-                $phone = $data3->phone;
-                $sacco_id = $data3->sacco_id;
-            }
-            ?>
+    $stmt3 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
+    $stmt3->execute(); //ok
+    $res3 = $stmt3->get_result();
+    while ($data3 = $res3->fetch_object()) {
+        $name = $data3->name;
+        $national_id = $data3->national_id;
+        $phone = $data3->phone;
+        $sacco_id = $data3->sacco_id;
+    }
+    ?>
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
@@ -170,24 +160,43 @@ if (isset($_POST['deposit'])) {
                                             </div>
 
                                             <div class="row">
-                                                <div class=" col-md-6 form-group">
+                                                <div class="col-md-4 form-group d-none">
                                                     <label for="exampleInputEmail1">Transaction Code</label>
                                                     <?php
-                                                    //PHP function to generate random account number
-                                                    $length = 20;
-                                                    $_transcode = substr(str_shuffle('0123456789QWERgfdsazxcvbnTYUIOqwertyuioplkjhmPASDFGHJKLMNBVCXZ'), 1, $length);
-                                                    ?>
+//PHP function to generate random account number
+    $length = 20;
+    $_transcode = substr(str_shuffle('0123456789QWERgfdsazxcvbnTYUIOqwertyuioplkjhmPASDFGHJKLMNBVCXZ'), 1, $length);
+    ?>
                                                     <input type="text" name="tr_code" readonly
                                                         value="<?php echo $_transcode; ?>" required class="form-control"
                                                         id="exampleInputEmail1">
                                                 </div>
-                                                <div class=" col-md-6 form-group">
+                                                <div class="col-md-4 form-group">
+                                                    <label for="exampleInputEmail1">Deposit through</label> <br />
+                                                    <input type="radio" name="type" disabled checked
+                                                        value="mobile" required class=""
+                                                        id="exampleInputEmail1">Mobile Money
+                                                    <input type="radio" name="type" disabled
+                                                        value="mobile" required class=""
+                                                        id="exampleInputEmail1">Bank of Kigali
+                                                    <input type="radio" name="type" disabled
+                                                        value="mobile" required class=""
+                                                        id="exampleInputEmail1">Equity Bank
+                                                </div>
+
+                                                <div class="col-md-4 form-group">
                                                     <label for="exampleInputPassword1">Amount Deposited</label>
                                                     <input type="number" min="1" autofocus autocomplete="off"
                                                         name="transaction_amt" required class="form-control"
                                                         id="exampleInputEmail1">
                                                 </div>
-                                                <div class=" col-md-4 form-group" style="display:none">
+                                                <div class="col-md-4 form-group">
+                                                    <label for="pay_mobile">Pay Phone Number</label>
+                                                    <input type="number" min="0" autofocus autocomplete="off"
+                                                        name="pay_mobile" required class="form-control"
+                                                        id="pay_mobile">
+                                                </div>
+                                                <div class="col-md-4 form-group" style="display:none">
                                                     <label for="exampleInputPassword1">Transaction Type</label>
                                                     <input type="text" name="tr_type" value="Deposit" required
                                                         class="form-control" id="exampleInputEmail1">
@@ -196,7 +205,7 @@ if (isset($_POST['deposit'])) {
                                                     <label for="exampleInputPassword1">Transaction Status</label>
                                                     <input type="text" name="tr_status" value="Success " required
                                                         class="form-control" id="exampleInputEmail1">
-                                                    <input type="hidden" name="sacco_id" value="<?= $sacco_id ?>" />
+                                                    <input type="hidden" name="sacco_id" value="<?=$sacco_id?>" />
                                                 </div>
 
                                             </div>
@@ -214,9 +223,10 @@ if (isset($_POST['deposit'])) {
                 </section>
                 <!-- /.content -->
             </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
-        <?php } ?>
+        <?php
+}?>
         <!-- /.content-wrapper -->
-        <?php include("dist/_partials/footer.php"); ?>
+        <?php include "dist/_partials/footer.php";?>
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">

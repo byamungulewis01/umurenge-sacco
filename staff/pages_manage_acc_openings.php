@@ -1,7 +1,7 @@
 <?php
 session_start();
-include('../conf/config.php');
-include('conf/checklogin.php');
+include '../conf/config.php';
+include 'conf/checklogin.php';
 check_login();
 $staff_id = $_SESSION['staff_id'];
 $ret = "SELECT * FROM staff where staff_id = ?";
@@ -13,34 +13,48 @@ while ($row = $res->fetch_object()) {
 }
 //fire staff
 if (isset($_GET['deleteBankAcc'])) {
-  $id = intval($_GET['deleteBankAcc']);
-  $adn = "DELETE FROM  bankaccounts  WHERE account_id = ?";
-  $stmt = $mysqli->prepare($adn);
-  $stmt->bind_param('i', $id);
-  $stmt->execute();
-  $stmt->close();
+    $id = intval($_GET['deleteBankAcc']);
+    $adn = "DELETE FROM  bankaccounts  WHERE account_id = ?";
+    $stmt = $mysqli->prepare($adn);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $stmt->close();
 
-  if ($stmt) {
-    $info = "iBanking Account Closed";
-  } else {
-    $err = "Try Again Later";
-  }
+    if ($stmt) {
+        $info = "iBanking Account Closed";
+    } else {
+        $err = "Try Again Later";
+    }
+}
+if (isset($_GET['activeBankAcc'])) {
+    $id = intval($_GET['activeBankAcc']);
+    $adn = "UPDATE bankaccounts SET acc_status = 'Active' WHERE account_id = ?";
+    $stmt = $mysqli->prepare($adn);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $stmt->close();
+
+    if ($stmt) {
+        $info = "iBanking Account Activated";
+    } else {
+        $err = "Try Again Later";
+    }
 }
 ?>
 <!-- Log on to alphacodecamp.com.ng for more projects! -->
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<?php include("dist/_partials/head.php"); ?>
+<?php include "dist/_partials/head.php";?>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
   <div class="wrapper">
     <!-- Navbar -->
-    <?php include("dist/_partials/nav.php"); ?>
+    <?php include "dist/_partials/nav.php";?>
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
-    <?php include("dist/_partials/sidebar.php"); ?>
+    <?php include "dist/_partials/sidebar.php";?>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -86,49 +100,57 @@ if (isset($_GET['deleteBankAcc'])) {
                   </thead>
                   <tbody>
                     <?php
-                    //fetch all iB_Accs
-                    $ret = "SELECT * FROM  bankaccounts WHERE sacco_id = ? ORDER BY account_id DESC";
-                    $stmt = $mysqli->prepare($ret);
-                    $stmt->execute([$staff_sacco]); //ok
-                    $res = $stmt->get_result();
-                    $cnt = 1;
-                    while ($row = $res->fetch_object()) {
-                      //Trim Timestamp to DD-MM-YYYY : H-M-S
-                      $dateOpened = $row->created_at;
+//fetch all iB_Accs
+$ret = "SELECT * FROM  bankaccounts WHERE sacco_id = ? ORDER BY account_id DESC";
+$stmt = $mysqli->prepare($ret);
+$stmt->execute([$staff_sacco]); //ok
+$res = $stmt->get_result();
+$cnt = 1;
+while ($row = $res->fetch_object()) {
+    //Trim Timestamp to DD-MM-YYYY : H-M-S
+    $dateOpened = $row->created_at;
 
-                      $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
-                      $stmt2->execute(); //ok
-                      $res2 = $stmt2->get_result();
-                      while ($data = $res2->fetch_object()) {
-                        $rate = $data->rate;
-                        $acc_type = $data->name;
-                      }
-                      
-                    ?>
+    $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
+    $stmt2->execute(); //ok
+    $res2 = $stmt2->get_result();
+    while ($data = $res2->fetch_object()) {
+        $rate = $data->rate;
+        $acc_type = $data->name;
+    }
+
+    ?>
 
                       <tr>
                         <td><?php echo $cnt; ?></td>
                         <td><?php echo $row->acc_name; ?></td>
-                        <td><?php echo $row->account_number; ?></td>
-                        <td><?= $rate ?></td>
-                        <td><?= $acc_type ?></td>
+                        <td><?= $row->account_id ?><?php echo $row->account_number; ?></td>
+                        <td><?=$rate?></td>
+                        <td><?=$acc_type?></td>
                         <td>
                           <?php
-                          $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
-                          $stmt2->execute(); //ok
-                          $res2 = $stmt2->get_result();
-                          while ($data = $res2->fetch_object()) {
-                            echo $data->name;
-                          }
-                          ?>
+$stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
+    $stmt2->execute(); //ok
+    $res2 = $stmt2->get_result();
+    while ($data = $res2->fetch_object()) {
+        echo $data->name;
+    }
+    ?>
                         </td>
                         <td><?php echo date("d-M-Y", strtotime($dateOpened)); ?></td>
                         <td>
-                          <a class="btn btn-success btn-sm" href="pages_update_client_accounts.php?account_id=<?php echo $row->account_id; ?>">
-                            <i class="fas fa-cogs"></i>
+                        <?php if ($row->acc_status == 'Inactive') {?>
+                          <a class="btn btn-warning btn-sm text-light" href="pages_manage_acc_openings.php?activeBankAcc=<?php echo $row->account_id; ?>">
+                            <i class="fas fa-plus"></i>
                             <!-- <i class="fas fa-briefcase"></i> -->
+                            Active Acc
+                          </a>
+                          <?php } else {?>
+                            <a class="btn btn-success btn-sm" href="pages_update_client_accounts.php?account_id=<?php echo $row->account_id; ?>">
+                            <i class="fas fa-cogs"></i>
                             Manage
                           </a>
+                            <?php }?>
+
 
                           <a class="btn btn-danger btn-sm" href="pages_manage_acc_openings.php?deleteBankAcc=<?php echo $row->account_id; ?>">
                             <i class="fas fa-times"></i>
@@ -141,7 +163,7 @@ if (isset($_GET['deleteBankAcc'])) {
 
                       </tr>
                     <?php $cnt = $cnt + 1;
-                    } ?>
+}?>
                     </tfoot>
                 </table>
               </div>
@@ -156,7 +178,7 @@ if (isset($_GET['deleteBankAcc'])) {
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <?php include("dist/_partials/footer.php"); ?>
+    <?php include "dist/_partials/footer.php";?>
 
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">

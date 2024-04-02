@@ -83,7 +83,7 @@
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-user-tie"></i>
                 <p>
-                  Staff
+                Manager
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -91,13 +91,13 @@
                 <li class="nav-item">
                   <a href="pages_add_staff.php" class="nav-link <?php echo ($current_page == 'pages_add_staff') ? 'active' : ''; ?>">
                     <i class="fas fa-user-plus nav-icon"></i>
-                    <p>Add Staff</p>
+                    <p>Add Manager</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="pages_manage_staff.php" class="nav-link <?php echo ($current_page == 'pages_manage_staff') ? 'active' : ''; ?>">
                     <i class="fas fa-user-cog nav-icon"></i>
-                    <p>Manage Staff</p>
+                    <p>Manage Managers</p>
                   </a>
                 </li>
                 <li class="nav-item">

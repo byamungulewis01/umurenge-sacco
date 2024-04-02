@@ -85,6 +85,33 @@
             </li>
             <!-- ./Account-->
 
+              <!--Ibank Staff-->
+              <li class="nav-item has-treeview <?php echo ($current_page == 'pages_add_staff' || $current_page == 'pages_manage_staff' || $current_page == 'pages_manage_sacco' || $current_page == 'pages_view_staff') ? 'show menu-open' : ''; ?>">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-user-tie"></i>
+                <p>
+                Staffs
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="pages_add_staff.php" class="nav-link <?php echo ($current_page == 'pages_add_staff') ? 'active' : ''; ?>">
+                    <i class="fas fa-user-plus nav-icon"></i>
+                    <p>Add Staff</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="pages_manage_staff.php" class="nav-link <?php echo ($current_page == 'pages_manage_staff') ? 'active' : ''; ?>">
+                    <i class="fas fa-user-cog nav-icon"></i>
+                    <p>Manage Staffs</p>
+                  </a>
+                </li>
+           
+              </ul>
+            </li>
+            <!-- ./iBank staff-->
+
             <!--Clients -->
             <li
               class="nav-item has-treeview <?php echo ($current_page == 'pages_add_client' || $current_page == 'pages_manage_clients' || $current_page == 'pages_view_client') ? 'show menu-open' : ''; ?>">
@@ -202,6 +229,15 @@
             <!-- ./Finances -->
 
             <li class="nav-header">Advanced Modules</li>
+            <li class="nav-item">
+              <a href="pages_transactions_request.php"
+                class="nav-link <?php echo ($current_page == 'pages_transactions_request') ? 'active' : ''; ?>">
+                <i class="nav-icon fas fa-exchange-alt"></i>
+                <p>
+                  Client Requests
+                </p>
+              </a>
+            </li>
             <li class="nav-item">
               <a href="pages_transactions_engine.php"
                 class="nav-link <?php echo ($current_page == 'pages_transactions_engine') ? 'active' : ''; ?>">

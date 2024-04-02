@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 26, 2024 at 05:32 PM
+-- Generation Time: Mar 31, 2024 at 06:36 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.2.4
 
@@ -94,7 +94,9 @@ INSERT INTO `bankaccounts` (`account_id`, `acc_name`, `account_number`, `acc_typ
 (2, 'Precast Tech ', '319862705', 5, 'Active', 0, 1, 6, '2024-02-24 07:03:56.119924'),
 (3, 'MUSONI Addy', '910634872', 2, 'Active', 0, 5, 4, '2024-02-10 11:43:24.414024'),
 (4, 'SIMBA Ltd update', '730295614', 7, 'Active', 0, 3, 4, '2024-02-10 12:12:06.144287'),
-(6, 'Second Account', '948376215', 4, 'Active', 0, 5, 4, '2024-02-14 12:30:45.822115');
+(6, 'Second Account', '948376215', 4, 'Active', 0, 5, 4, '2024-02-14 12:30:45.822115'),
+(9, 'BMG Lewis Ltd', '019783542', 5, 'Inactive', 0, 1, 6, '2024-03-23 06:38:22.020539'),
+(10, 'Lebon Ltd', '154238907', 2, 'Active', 0, 14, 7, '2024-03-31 04:46:26.883599');
 
 -- --------------------------------------------------------
 
@@ -119,9 +121,11 @@ CREATE TABLE `clients` (
 --
 
 INSERT INTO `clients` (`client_id`, `name`, `national_id`, `phone`, `email`, `password`, `profile_pic`, `client_number`, `sacco_id`) VALUES
-(1, 'BYAMUNGU Lewis', '1129930029292292', '0789818378', 'byamungulewis@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', '', 'CLIENT-001', 6),
+(1, 'BYAMUNGU Lewis ', '1129930029292292', '0789818378', 'byamungulewis@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', '', 'CLIENT-001', 6),
 (3, 'ISHIMWE Gloria', '1199003939939393', '0786635355', 'ishimwegloria@gmail.com', '0dfed031f0bb0def3670aa08a1575b14ae5d1a4b', 'team-4.jpg', 'CLIENT-002', 4),
-(5, 'MUSONI Addy', '1222555555555545', '0785436135', 'blewis@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', '', 'CLIENT-003', 4);
+(5, 'MUSONI Addy', '1222555555555545', '0785436135', 'blewis@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', '', 'CLIENT-003', 4),
+(14, 'Ntwari Lebon', '1129930334444444', '0724790762', 'ntwarilebon09@gmail.com', '10470c3b4b1fed12c3baac014be15fac67c6e815', '', 'iBank-CLIENT-0329', 7),
+(15, 'Halla Dotson', 'Qui in reprehenderit', '+1 (137) 427-7071', 'semux@mailinator.com', '92432e7c66519c4e404d347718ffe641a658ac7e', '', 'iBank-CLIENT-1467', 7);
 
 -- --------------------------------------------------------
 
@@ -184,6 +188,7 @@ INSERT INTO `sacco` (`id`, `name`, `location`, `created_at`) VALUES
 
 CREATE TABLE `staff` (
   `staff_id` int(20) NOT NULL,
+  `post` varchar(255) NOT NULL,
   `name` varchar(200) NOT NULL,
   `staff_number` varchar(200) NOT NULL,
   `phone` varchar(200) NOT NULL,
@@ -198,10 +203,13 @@ CREATE TABLE `staff` (
 -- Dumping data for table `staff`
 --
 
-INSERT INTO `staff` (`staff_id`, `name`, `staff_number`, `phone`, `email`, `password`, `sex`, `profile_pic`, `sacco_id`) VALUES
-(1, 'BYAMUNGU Lewis', 'STAFF-001', '0785554455', 'byamungulewis@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', 'Male', '', 4),
-(2, 'NIYONASENZE Aliane', 'STAFF-002', '0789818378', 'niyonasenze@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', 'Female', '', 6),
-(6, 'Ntwari Lebon', 'STAFF-003', '0785556665', 'ntwarilebon09@gmail.com', 'fef3e9a034e95b328131eb25dd3382d1cc14bf36', 'Male', '', 4);
+INSERT INTO `staff` (`staff_id`, `post`, `name`, `staff_number`, `phone`, `email`, `password`, `sex`, `profile_pic`, `sacco_id`) VALUES
+(1, 'manager', 'BYAMUNGU Lewis', 'STAFF-001', '0785554455', 'byamungulewis@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', 'Male', '', 7),
+(2, 'manager', 'NIYONASENZE Aliane', 'STAFF-002', '0789818378', 'niyonasenze@gmail.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', 'Female', '', 6),
+(6, 'manager', 'Ntwari Lebon', 'STAFF-003', '0785556665', 'ntwarilebon09@gmail.com', 'fef3e9a034e95b328131eb25dd3382d1cc14bf36', 'Male', '', 4),
+(7, 'manager', 'wisapo@mailinator.com', 'MANAGER-004', '+1 (973) 789-261', 'lupibenajy@mailinator.com', 'd6b963ee09e9e1f41ceec64b80d54f6895c3d363', 'Male', '', 7),
+(8, 'teller', 'TEST USER', 'STAFF-005', '0785544555', 'testuser@email.com', '10470c3b4b1fed12c3baac014be15fac67c6e815', 'Female', '', 4),
+(9, 'loan_officer', 'TEST USER2 UPdate', 'STAFF-006', '0788855522', 'admin@gmail.com', '75dd9814c49dc27d99038c4ec197b92d66b195e8', 'Female', '', 4);
 
 -- --------------------------------------------------------
 
@@ -238,6 +246,7 @@ CREATE TABLE `transactions` (
   `tr_status` varchar(200) NOT NULL,
   `transaction_amt` bigint(20) NOT NULL,
   `receiving_acc_id` int(11) DEFAULT NULL,
+  `phone` varchar(11) DEFAULT NULL,
   `sacco_id` int(11) NOT NULL,
   `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -246,14 +255,23 @@ CREATE TABLE `transactions` (
 -- Dumping data for table `transactions`
 --
 
-INSERT INTO `transactions` (`tr_id`, `tr_code`, `client_id`, `account_id`, `tr_type`, `tr_status`, `transaction_amt`, `receiving_acc_id`, `sacco_id`, `created_at`) VALUES
-(1, 'Mvbfql3DkcXw6m2WSKeZ', 1, 2, 'Deposit', 'Success ', 40000, NULL, 7, '2024-02-24 09:30:57.854198'),
-(2, '9t3BzADgkspa8LvCVrcO', 1, 2, 'Withdrawal', 'Success ', 1000, NULL, 6, '2024-02-24 09:31:08.730292'),
-(4, 'BRTg4L3yI1Z9j5SANv7s', 3, 4, 'Deposit', 'Success ', 20000, NULL, 4, '2024-02-24 09:31:12.598864'),
-(5, '4PM7qQTRbZVmHKSch1aJ', 3, 4, 'Withdrawal', 'Success ', 2000, NULL, 4, '2024-02-24 09:31:15.589372'),
-(6, 'VJ3O0BQ4Fs9trjmMdUYA', 3, 4, 'Transfer', 'Success ', 2000, 910634872, 7, '2024-02-24 09:31:17.925927'),
-(7, 'GiIKh9ESz5wJngtdscuZ', 5, 4, 'Transfer', 'Success ', 3000, 319862705, 4, '2024-02-24 09:31:30.862014'),
-(9, 'O589DGIvUQzeZ0j47dqo', 5, 4, 'Loan', 'Success ', 7000, NULL, 4, '2024-02-24 09:31:27.197857');
+INSERT INTO `transactions` (`tr_id`, `tr_code`, `client_id`, `account_id`, `tr_type`, `tr_status`, `transaction_amt`, `receiving_acc_id`, `phone`, `sacco_id`, `created_at`) VALUES
+(1, 'Mvbfql3DkcXw6m2WSKeZ', 1, 2, 'Deposit', 'Success ', 40000, NULL, NULL, 7, '2024-02-24 09:30:57.854198'),
+(2, '9t3BzADgkspa8LvCVrcO', 1, 2, 'Withdrawal', 'Success ', 1000, NULL, NULL, 6, '2024-02-24 09:31:08.730292'),
+(4, 'BRTg4L3yI1Z9j5SANv7s', 3, 4, 'Deposit', 'Success ', 20000, NULL, NULL, 4, '2024-02-24 09:31:12.598864'),
+(5, '4PM7qQTRbZVmHKSch1aJ', 3, 4, 'Withdrawal', 'Success ', 2000, NULL, NULL, 4, '2024-02-24 09:31:15.589372'),
+(6, 'VJ3O0BQ4Fs9trjmMdUYA', 3, 4, 'Transfer', 'Success ', 2000, 910634872, NULL, 7, '2024-02-24 09:31:17.925927'),
+(7, 'GiIKh9ESz5wJngtdscuZ', 5, 4, 'Transfer', 'Success ', 3000, 319862705, NULL, 4, '2024-02-24 09:31:30.862014'),
+(9, 'O589DGIvUQzeZ0j47dqo', 5, 4, 'Loan', 'Success ', 7000, NULL, NULL, 4, '2024-02-24 09:31:27.197857'),
+(10, '0hyzNOqmWYkxEbJoU6Q3', 5, 3, 'Deposit', 'Success ', 12000, NULL, NULL, 4, '2024-03-01 07:23:01.129756'),
+(11, 'YgzvBeRT9LG8i2mUqJ4x', 5, 3, 'Withdrawal', 'Success ', 3000, NULL, NULL, 4, '2024-03-01 07:24:34.771066'),
+(12, 'Vx8YDLn0cbBkTUNui2X4', 3, 4, 'Transfer', 'Success ', 4000, 910634872, NULL, 4, '2024-03-01 07:27:03.609978'),
+(13, 'iVvFUM53uHp9LGXtPB2D', 5, 3, 'Loan', 'Success ', 34000, NULL, NULL, 4, '2024-03-01 07:29:59.447925'),
+(14, '8aIjACoF1iuMv0hcKr9x', 1, 2, 'Deposit', 'Success ', 4000, NULL, NULL, 6, '2024-03-05 20:56:08.771355'),
+(15, '2LJBu7mkUH0z1YrZlD5c', 1, 2, 'Withdrawal', 'Success ', 10000, NULL, '0785436135', 6, '2024-03-05 21:32:14.301495'),
+(16, 'T02SbcyDIR7zXJhHVWfq', 1, 2, 'Transfer', 'Success ', 1000, 730295614, NULL, 6, '2024-03-06 04:59:59.740008'),
+(18, 'fMVx8CsSm7jo1lIu2tkr', 1, 2, 'Loan', 'Success', 12000, NULL, NULL, 6, '2024-03-23 07:29:15.772499'),
+(19, 'cUeKraY39ILlnuxJdp1s', 1, 2, 'Deposit', 'Success ', 4000, NULL, NULL, 6, '2024-03-23 06:51:01.019867');
 
 --
 -- Indexes for dumped tables
@@ -289,9 +307,9 @@ ALTER TABLE `bankaccounts`
 ALTER TABLE `clients`
   ADD PRIMARY KEY (`client_id`),
   ADD UNIQUE KEY `unique_national_id` (`national_id`),
-  ADD UNIQUE KEY `unique_email_id` (`email`),
   ADD UNIQUE KEY `unique_phone_id` (`phone`),
   ADD UNIQUE KEY `unique_client_number_id` (`client_number`),
+  ADD UNIQUE KEY `unique_email_id` (`email`),
   ADD KEY `fk_saaco_id` (`sacco_id`);
 
 --
@@ -329,7 +347,8 @@ ALTER TABLE `systemsettings`
 ALTER TABLE `transactions`
   ADD PRIMARY KEY (`tr_id`),
   ADD KEY `fk_saaco6_id` (`sacco_id`),
-  ADD KEY `fk_account_id` (`account_id`);
+  ADD KEY `fk_account_id` (`account_id`),
+  ADD KEY `client_id_by_foreign` (`client_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -351,13 +370,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `bankaccounts`
 --
 ALTER TABLE `bankaccounts`
-  MODIFY `account_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `account_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -375,7 +394,7 @@ ALTER TABLE `sacco`
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `staff_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `staff_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `systemsettings`
@@ -387,7 +406,7 @@ ALTER TABLE `systemsettings`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `tr_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `tr_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Constraints for dumped tables
@@ -417,6 +436,7 @@ ALTER TABLE `staff`
 -- Constraints for table `transactions`
 --
 ALTER TABLE `transactions`
+  ADD CONSTRAINT `client_id_by_foreign` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`),
   ADD CONSTRAINT `fk_account_id` FOREIGN KEY (`account_id`) REFERENCES `bankaccounts` (`account_id`),
   ADD CONSTRAINT `fk_saaco6_id` FOREIGN KEY (`sacco_id`) REFERENCES `sacco` (`id`);
 COMMIT;

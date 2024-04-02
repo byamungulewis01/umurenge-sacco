@@ -51,60 +51,80 @@ $client_id = $_SESSION['client_id'];
                 <h3 class="card-title">Select on any action options to manage your clients</h3>
               </div>
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-hover table-striped">
+              <table id="example1" class="table table-hover table-bordered table-striped">
                   <thead>
                     <tr>
                       <th>#</th>
                       <th>Name</th>
-                      <th>Client Number</th>
-                      <th>ID No.</th>
-                      <th>Contact</th>
-                      <th>Email</th>
-                      <th>Address</th>
+                      <th>Account No.</th>
+                      <th>Rate</th>
+                      <th>Acc. Type</th>
+                      <th>Acc. Owner</th>
                       <th>Action</th>
                     </tr>
-                  </thead>
+                  </thead><!-- Log on to alphacodecamp.com.ng for more projects! -->
                   <tbody>
                     <?php
-                    //fetch all iBank clients
-                    $ret = "SELECT * FROM  clients ORDER BY RAND() ";
+                    //fetch all iB_Accs
+                    $ret = "SELECT * FROM  bankaccounts WHERE client_id = ? AND acc_status = 'Active'";
                     $stmt = $mysqli->prepare($ret);
-                    $stmt->execute(); //ok
+                    $stmt->execute([$client_id]); //ok
                     $res = $stmt->get_result();
                     $cnt = 1;
                     while ($row = $res->fetch_object()) {
+                      //Trim Timestamp to DD-MM-YYYY : H-M-S
+                      $dateOpened = $row->created_at;
 
-                    ?>
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
+                      $stmt2->execute(); //ok
+                      $res2 = $stmt2->get_result();
+                      while ($data = $res2->fetch_object()) {
+                        $rate = $data->rate;
+                        $acc_type = $data->name;
+                      }
+
+                      ?>
 
                       <tr>
-                        <td><?php echo $cnt; ?></td>
-                        <td><?php echo $row->name; ?></td>
-                        <td><?php echo $row->client_number; ?></td>
-                        <td><?php echo $row->national_id; ?></td>
-                        <td><?php echo $row->phone; ?></td>
-                        <td><?php echo $row->email; ?></td>
-                        <td><?php echo $row->address; ?></td>
                         <td>
-                          <a class="btn btn-success btn-sm" href="pages_view_client.php?client_number=<?php echo $row->client_number; ?>">
-                            <i class="fas fa-cogs"></i>
-                            <!-- <i class="fas fa-user"></i> -->
-                            Manage
+                          <?php echo $cnt; ?>
+                        </td>
+                        <td>
+                          <?php echo $row->acc_name; ?>
+                        </td>
+                        <td>
+                          <?php echo  $row->account_id . $row->account_number; ?>
+                        </td>
+                        <td>
+                          <?php echo $rate; ?>%
+                        </td>
+                        <td>
+                          <?php echo $acc_type; ?>
+                        </td>
+                        <td>
+                          <?php
+                          $stmt2 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
+                          $stmt2->execute(); //ok
+                          $res2 = $stmt2->get_result();
+                          while ($data = $res2->fetch_object()) {
+                            echo $data->name;
+                          }
+                          ?>
+                        </td>
+                        <td>
+                          <a class="btn btn-success btn-sm"
+                            href="pages_loan_money.php?account_id=<?php echo $row->account_id; ?>&account_number=<?php echo $row->account_number; ?>&client_id=<?php echo $row->client_id; ?>">
+                            <i class="fas fa-cart-arrow-down nav-icon"></i>
+                            Loan
                           </a>
-
-                          <a class="btn btn-danger btn-sm" href="pages_manage_clients.php?deleteClient=<?php echo $row->client_id; ?>">
-                            <i class="fas fa-trash"></i>
-                            <!-- <i class="fas fa-user"></i> -->
-                            Delete
-                          </a>
-
 
                         </td>
 
                       </tr>
-                    <?php $cnt = $cnt + 1;
+                      <?php $cnt = $cnt + 1;
                     } ?>
                     </tfoot>
-                </table><!-- Log on to alphacodecamp.com.ng for more projects! -->
+                </table>
               </div>
               <!-- /.card-body -->
             </div>

@@ -72,7 +72,7 @@ while ($row = $res->fetch_object()) {
                   <tbody>
                     <?php
                     //fetch all iB_Accs
-                    $ret = "SELECT * FROM  bankaccounts WHERE sacco_id = ?";
+                    $ret = "SELECT * FROM  bankaccounts WHERE acc_status = 'Active' AND sacco_id = ?";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute([$staff_sacco]); //ok
                     $res = $stmt->get_result();
@@ -92,7 +92,7 @@ while ($row = $res->fetch_object()) {
                       <tr>
                         <td><?php echo $cnt; ?></td>
                         <td><?php echo $row->acc_name; ?></td>
-                        <td><?php echo $row->account_number; ?></td>
+                        <td><?php echo $row->account_id . $row->account_number; ?></td>
                         <td><?php echo $rate; ?>%</td>
                         <td><?php echo $acc_type; ?></td>
                         <td><?php
@@ -106,9 +106,7 @@ while ($row = $res->fetch_object()) {
                         <td>
                           <a class="btn btn-info btn-sm" href="pages_transfer_money.php?account_id=<?php echo $row->account_id; ?>&account_number=<?php echo $row->account_number; ?>&client_id=<?php echo $row->client_id; ?>">
                             <i class="fas fa-money-bill-alt"></i>
-                            <i class="fas fa-upload"></i>
-                            Transfer
-                          </a>
+                            <i class="fas fa-upload"></i>Transfer</a>
 
                         </td>
 

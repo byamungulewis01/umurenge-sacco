@@ -5,6 +5,14 @@ include('conf/checklogin.php');
 check_login();
 $staff_id = $_SESSION['staff_id'];
 
+$ret = "SELECT * FROM staff where staff_id = ?";
+$stmt = $mysqli->prepare($ret);
+$stmt->execute([$staff_id]); //ok
+$res = $stmt->get_result();
+while ($row = $res->fetch_object()) {
+  $staff_sacco = $row->sacco_id; //staff
+}
+
 //clear notifications and alert user that they are cleared
 if (isset($_GET['Clear_Notifications'])) {
   $id = intval($_GET['Clear_Notifications']);
@@ -27,7 +35,7 @@ if (isset($_GET['Clear_Notifications'])) {
     */
 
 //return total number of ibank clients
-$result = "SELECT count(*) FROM clients";
+$result = "SELECT count(*) FROM clients WHERE sacco_id = $staff_sacco";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iBClients);
@@ -35,7 +43,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of iBank Staffs
-$result = "SELECT count(*) FROM staff";
+$result = "SELECT count(*) FROM staff WHERE sacco_id = $staff_sacco";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iBStaffs);
@@ -51,7 +59,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of iBank Accounts
-$result = "SELECT count(*) FROM bankaccounts";
+$result = "SELECT count(*) FROM bankaccounts WHERE sacco_id = $staff_sacco";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iB_Accs);
@@ -59,7 +67,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of iBank Deposits
-$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Deposit' ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Deposit' AND sacco_id = $staff_sacco";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iB_deposits);
@@ -67,7 +75,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of iBank Withdrawals
-$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Withdrawal' ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Withdrawal' AND sacco_id = $staff_sacco";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iB_withdrawal);
@@ -77,7 +85,7 @@ $stmt->close();
 
 
 //return total number of iBank Transfers
-$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Transfer' ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Transfer' AND sacco_id = $staff_sacco";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iB_Transfers);
@@ -85,7 +93,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of  iBank initial cash->balances
-$result = "SELECT SUM(transaction_amt) FROM transactions ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE sacco_id = $staff_sacco";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($acc_amt);
@@ -96,7 +104,7 @@ $TotalBalInAccount = ($iB_deposits) - (($iB_withdrawal) + ($iB_Transfers));
 
 
 //ibank money in the wallet
-$result = "SELECT SUM(transaction_amt) FROM transactions ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE sacco_id = $staff_sacco";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($new_amt);
@@ -381,7 +389,7 @@ $stmt->close();
                       <tbody>
                         <?php
                         //Get latest transactions 
-                        $ret = "SELECT * FROM `transactions` ORDER BY `transactions`.`created_at` DESC ";
+                        $ret = "SELECT * FROM `transactions` WHERE sacco_id = $staff_sacco ORDER BY `transactions`.`created_at` DESC ";
                         $stmt = $mysqli->prepare($ret);
                         $stmt->execute(); //ok
                         $res = $stmt->get_result();
@@ -516,7 +524,7 @@ $stmt->close();
           dataPoints: [{
             y: <?php
             //return total number of accounts opened under savings acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Savings'";
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =1";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($savings);
@@ -531,7 +539,7 @@ $stmt->close();
           {
             y: <?php
             //return total number of accounts opened under  Retirement  acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =' Retirement'  ";
+            $result = "SELECT count(*) FROM bankaccounts WHERE acc_type =2";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($Retirement);
@@ -546,7 +554,7 @@ $stmt->close();
           {
             y: <?php
             //return total number of accounts opened under  Recurring deposit  acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Recurring deposit' ";
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =4 ";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($Recurring);
@@ -561,7 +569,7 @@ $stmt->close();
           {
             y: <?php
             //return total number of accounts opened under  Fixed Deposit Account deposit  acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Fixed Deposit Account' ";
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =5 ";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($Fixed);
@@ -576,7 +584,7 @@ $stmt->close();
           {
             y: <?php
             //return total number of accounts opened under  Current account deposit  acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Current account' ";
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =7";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($Current);

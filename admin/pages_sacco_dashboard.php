@@ -4,6 +4,7 @@ include('../conf/config.php');
 include('conf/checklogin.php');
 check_login();
 $admin_id = $_SESSION['admin_id'];
+$sacco_id = $_GET['saccoId'];
 
 //clear notifications and alert user that they are cleared
 if (isset($_GET['Clear_Notifications'])) {
@@ -27,7 +28,7 @@ if (isset($_GET['Clear_Notifications'])) {
     */
 
 //return total number of ibank clients
-$result = "SELECT count(*) FROM clients";
+$result = "SELECT count(*) FROM clients WHERE sacco_id = $sacco_id";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iBClients);
@@ -35,7 +36,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of iBank Staffs
-$result = "SELECT count(*) FROM staff";
+$result = "SELECT count(*) FROM staff WHERE sacco_id = $sacco_id";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iBStaffs);
@@ -51,7 +52,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of iBank Accounts
-$result = "SELECT count(*) FROM bankaccounts";
+$result = "SELECT count(*) FROM bankaccounts WHERE sacco_id = $sacco_id";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iB_Accs);
@@ -59,7 +60,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of iBank Deposits
-$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Deposit' ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Deposit' AND sacco_id = $sacco_id ";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iB_deposits);
@@ -67,7 +68,7 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of iBank Withdrawals
-$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Withdrawal' ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Withdrawal' AND sacco_id = $sacco_id ";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iB_withdrawal);
@@ -77,7 +78,7 @@ $stmt->close();
 
 
 //return total number of iBank Transfers
-$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Transfer' ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE  tr_type = 'Transfer' AND sacco_id = $sacco_id ";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($iB_Transfers);
@@ -85,18 +86,18 @@ $stmt->fetch();
 $stmt->close();
 
 //return total number of  iBank initial cash->balances
-$result = "SELECT SUM(transaction_amt) FROM transactions ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE sacco_id = $sacco_id  ";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($acc_amt);
 $stmt->fetch();
 $stmt->close();
 //Get the remaining money in the accounts
-$TotalBalInAccount = ($iB_deposits)  - (($iB_withdrawal) + ($iB_Transfers));
+$TotalBalInAccount = ($iB_deposits) - (($iB_withdrawal) + ($iB_Transfers));
 
 
 //ibank money in the wallet
-$result = "SELECT SUM(transaction_amt) FROM transactions ";
+$result = "SELECT SUM(transaction_amt) FROM transactions WHERE sacco_id = $sacco_id ";
 $stmt = $mysqli->prepare($result);
 $stmt->execute();
 $stmt->bind_result($new_amt);
@@ -128,7 +129,7 @@ $stmt->close();
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0 text-dark">Admin Dashboard</h1>
+              <h1 class="m-0 text-dark">Sacco Dashboard</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
@@ -148,11 +149,11 @@ $stmt->close();
           <div class="row">
 
             <!-- ./ iBank Clients -->
-            <div class="col-12 col-sm-6 col-md-3">
+            <div class="col-12 col-sm-6 col-md-4">
               <div class="info-box">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
                 <div class="info-box-content">
-                  <span class="info-box-text">Clients</span>
+                  <span class="info-box-text"> Clients</span>
                   <span class="info-box-number">
                     <?php echo $iBClients; ?>
                   </span>
@@ -161,43 +162,32 @@ $stmt->close();
             </div>
             <!-- ./ iBank Clients -->
 
-            <!--iBank Staffs-->
-            <div class="col-12 col-sm-6 col-md-3">
-              <div class="info-box mb-3">
-                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user-tie"></i></span>
-
-                <div class="info-box-content">
-                  <span class="info-box-text">Staffs</span>
-                  <span class="info-box-number">
-                    <?php echo $iBStaffs; ?>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <!-- ./ iBank Staffs-->
-
             <!-- fix for small devices only -->
             <div class="clearfix hidden-md-up"></div>
 
             <!--Ibank Acc types-->
-            <div class="col-12 col-sm-6 col-md-3">
+            <div class="col-12 col-sm-6 col-md-4">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-success elevation-1"><i class="fas fa-briefcase"></i></span>
                 <div class="info-box-content">
-                  <span class="info-box-text">Account Types</span>
-                  <span class="info-box-number"><?php echo $iB_AccsType; ?></span>
+                  <span class="info-box-text"> Account Types</span>
+                  <span class="info-box-number">
+                    <?php echo $iB_AccsType; ?>
+                  </span>
                 </div>
               </div>
             </div>
             <!-- /.iBank Acc types -->
 
             <!--iBank Accounts-->
-            <div class="col-12 col-sm-6 col-md-3">
+            <div class="col-12 col-sm-6 col-md-4">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-purple elevation-1"><i class="fas fa-users"></i></span>
                 <div class="info-box-content">
-                  <span class="info-box-text">Accounts</span>
-                  <span class="info-box-number"><?php echo $iB_Accs; ?></span>
+                  <span class="info-box-text"> Accounts</span>
+                  <span class="info-box-number">
+                    <?php echo $iB_Accs; ?>
+                  </span>
                 </div>
               </div>
             </div>
@@ -210,9 +200,9 @@ $stmt->close();
               <div class="info-box">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-upload"></i></span>
                 <div class="info-box-content">
-                  <span class="info-box-text">Deposits</span>
+                  <span class="info-box-text"> Deposits</span>
                   <span class="info-box-number">
-                     <?php echo number_format($iB_deposits); ?> Frw
+                    <?php echo number_format($iB_deposits); ?> Frw
                   </span>
                 </div>
               </div>
@@ -226,7 +216,9 @@ $stmt->close();
 
                 <div class="info-box-content">
                   <span class="info-box-text">Withdrawals</span>
-                  <span class="info-box-number"><?php echo number_format($iB_withdrawal); ?> Frw</span>
+                  <span class="info-box-number">
+                    <?php echo number_format($iB_withdrawal); ?> Frw
+                  </span>
                 </div>
               </div>
             </div>
@@ -241,7 +233,9 @@ $stmt->close();
                 <span class="info-box-icon bg-success elevation-1"><i class="fas fa-random"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Transfers</span>
-                  <span class="info-box-number"><?php echo number_format($iB_Transfers); ?> Frw</span>
+                  <span class="info-box-number">
+                    <?php echo number_format($iB_Transfers); ?>Frw
+                  </span>
                 </div>
               </div>
             </div>
@@ -253,12 +247,14 @@ $stmt->close();
                 <span class="info-box-icon bg-purple elevation-1"><i class="fas fa-money-bill-alt"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Wallet Balance</span>
-                  <span class="info-box-number"><?php echo number_format($TotalBalInAccount); ?> Frw</span>
+                  <span class="info-box-number">
+                    <?php echo number_format($TotalBalInAccount); ?>Frw
+                  </span>
                 </div>
               </div>
             </div>
             <!-- ./Balances-->
-          </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
+          </div>
 
           <div class="row">
             <div class="col-md-12">
@@ -273,21 +269,23 @@ $stmt->close();
                       <i class="fas fa-times"></i>
                     </button>
                   </div>
-                </div>
+                </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
                 <!-- /.card-header -->
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="chart">
                         <!-- Transaction Donought chart Canvas -->
-                        <div id="PieChart" class="col-md-6" style="height: 400px; max-width: 500px; margin: 0px auto;"></div>
+                        <div id="PieChart" class="col-md-6" style="height: 400px; max-width: 500px; margin: 0px auto;">
+                        </div>
                       </div>
                       <!-- /.chart-responsive -->
                     </div>
                     <hr>
                     <div class="col-md-6">
                       <div class="chart">
-                        <div id="AccountsPerAccountCategories" class="col-md-6" style="height: 400px; max-width: 500px; margin: 0px auto;"></div>
+                        <div id="AccountsPerAccountCategories" class="col-md-6"
+                          style="height: 400px; max-width: 500px; margin: 0px auto;"></div>
                       </div>
                       <!-- /.chart-responsive -->
                     </div>
@@ -301,15 +299,19 @@ $stmt->close();
                   <div class="row">
                     <div class="col-sm-3 col-6">
                       <div class="description-block border-right">
-                        <h5 class="description-header"><?php echo number_format($iB_deposits); ?></h5>
+                        <h5 class="description-header">
+                          <?php echo $iB_deposits; ?>
+                        </h5>
                         <span class="description-text">TOTAL DEPOSITS</span>
                       </div>
                       <!-- /.description-block -->
-                    </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
+                    </div>
                     <!-- /.col -->
                     <div class="col-sm-3 col-6">
                       <div class="description-block border-right">
-                        <h5 class="description-header"><?php echo number_format($iB_withdrawal); ?></h5>
+                        <h5 class="description-header">
+                          <?php echo $iB_withdrawal; ?>
+                        </h5>
                         <span class="description-text">TOTAL WITHDRAWALS</span>
                       </div>
                       <!-- /.description-block -->
@@ -317,7 +319,9 @@ $stmt->close();
                     <!-- /.col -->
                     <div class="col-sm-3 col-6">
                       <div class="description-block border-right">
-                        <h5 class="description-header"><?php echo number_format($iB_Transfers); ?> </h5>
+                        <h5 class="description-header">
+                          <?php echo $iB_Transfers; ?>
+                        </h5>
                         <span class="description-text">TOTAL TRANSFERS</span>
                       </div>
                       <!-- /.description-block -->
@@ -325,8 +329,10 @@ $stmt->close();
                     <!-- /.col -->
                     <div class="col-sm-3 col-6">
                       <div class="description-block">
-                        <h5 class="description-header"><?php echo number_format($TotalBalInAccount); ?> </h5>
-                        <span class="description-text">TOTAL MONEY IN Account</span>
+                        <h5 class="description-header">
+                          <?php echo $TotalBalInAccount; ?>
+                        </h5>
+                        <span class="description-text">TOTAL MONEY IN iBANK Account</span>
                       </div>
                       <!-- /.description-block -->
                     </div>
@@ -342,7 +348,7 @@ $stmt->close();
           <!-- /.row -->
 
           <!-- Main row -->
-          <div class="row"><!-- Log on to alphacodecamp.com.ng for more projects! -->
+          <div class="row">
             <!-- Left col -->
             <div class="col-md-12">
               <!-- TABLE: Transactions -->
@@ -358,11 +364,11 @@ $stmt->close();
                       <i class="fas fa-times"></i>
                     </button>
                   </div>
-                </div>
+                </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
                 <!-- /.card-header -->
                 <div class="card-body p-0">
                   <div class="table-responsive">
-                  <table class="table table-hover table-bordered m-0">
+                    <table class="table table-hover table-bordered m-0">
                       <thead>
                         <tr>
                           <th>Transaction Code</th>
@@ -376,16 +382,12 @@ $stmt->close();
                       <tbody>
                         <?php
                         //Get latest transactions 
-                        $ret = "SELECT * FROM `transactions` WHERE tr_status = 'Success' ORDER BY `transactions`.`created_at` DESC ";
+                        $ret = "SELECT * FROM `transactions` WHERE sacco_id = $sacco_id  ORDER BY `transactions`.`created_at` DESC ";
                         $stmt = $mysqli->prepare($ret);
                         $stmt->execute(); //ok
                         $res = $stmt->get_result();
                         $cnt = 1;
                         while ($row = $res->fetch_object()) {
-                          /* Trim Transaction Timestamp to 
-                           *  User Uderstandable Formart  DD-MM-YYYY :
-                           */
-
                           $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id = $row->account_id");
                           $stmt2->execute(); //ok
                           $res2 = $stmt2->get_result();
@@ -413,7 +415,7 @@ $stmt->close();
                               <?php echo $row->tr_code; ?></a>
                             </td>
                             <td>
-                              <?php echo $account_id . $account; ?>
+                              <?php echo  $account_id . $account; ?>
                             </td>
                             <td>
                               <?php echo $alertClass; ?>
@@ -433,7 +435,7 @@ $stmt->close();
 
                       </tbody>
                     </table>
-                  </div>
+                  </div><!-- Log on to alphacodecamp.com.ng for more projects! -->
                   <!-- /.table-responsive -->
                 </div>
                 <!-- /.card-body -->
@@ -495,7 +497,7 @@ $stmt->close();
   <script src="plugins/canvasjs.min.js"></script>
   <!--Load Few Charts-->
   <script>
-    window.onload = function() {
+    window.onload = function () {
 
       var Piechart = new CanvasJS.Chart("PieChart", {
         exportEnabled: false,
@@ -515,7 +517,7 @@ $stmt->close();
           dataPoints: [{
             y: <?php
             //return total number of accounts opened under savings acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =1";
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Savings'";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($savings);
@@ -530,7 +532,7 @@ $stmt->close();
           {
             y: <?php
             //return total number of accounts opened under  Retirement  acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE acc_type =2";
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =' Retirement'  ";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($Retirement);
@@ -545,7 +547,7 @@ $stmt->close();
           {
             y: <?php
             //return total number of accounts opened under  Recurring deposit  acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =4 ";
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Recurring deposit' ";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($Recurring);
@@ -560,7 +562,7 @@ $stmt->close();
           {
             y: <?php
             //return total number of accounts opened under  Fixed Deposit Account deposit  acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =5 ";
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Fixed Deposit Account' ";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($Fixed);
@@ -575,7 +577,7 @@ $stmt->close();
           {
             y: <?php
             //return total number of accounts opened under  Current account deposit  acc type
-            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type =7";
+            $result = "SELECT count(*) FROM bankaccounts WHERE  acc_type ='Current account' ";
             $stmt = $mysqli->prepare($result);
             $stmt->execute();
             $stmt->bind_result($Current);
@@ -589,7 +591,6 @@ $stmt->close();
           ]
         }]
       });
-
 
       var AccChart = new CanvasJS.Chart("AccountsPerAccountCategories", {
         exportEnabled: false,
@@ -607,49 +608,49 @@ $stmt->close();
           toolTipContent: "{name}: <strong>{y}%</strong>",
           indexLabel: "{name} - {y}%",
           dataPoints: [{
-              y: <?php
-                  //return total number of transactions under  Withdrawals
-                  $result = "SELECT count(*) FROM transactions WHERE  tr_type ='Withdrawal' ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Withdrawals);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Withdrawals;
-                  ?>,
-              name: "Withdrawals",
-              exploded: true
-            },
+            y: <?php
+            //return total number of transactions under  Withdrawals
+            $result = "SELECT count(*) FROM transactions WHERE  tr_type ='Withdrawal' ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Withdrawals);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Withdrawals;
+            ?>,
+            name: "Withdrawals",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of transactions under  Deposits
-                  $result = "SELECT count(*) FROM transactions WHERE  tr_type ='Deposit' ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Deposits);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Deposits;
-                  ?>,
-              name: "Deposits",
-              exploded: true
-            },
+          {
+            y: <?php
+            //return total number of transactions under  Deposits
+            $result = "SELECT count(*) FROM transactions WHERE  tr_type ='Deposit' ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Deposits);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Deposits;
+            ?>,
+            name: "Deposits",
+            exploded: true
+          },
 
-            {
-              y: <?php
-                  //return total number of transactions under  Deposits
-                  $result = "SELECT count(*) FROM transactions WHERE  tr_type ='Transfer' ";
-                  $stmt = $mysqli->prepare($result);
-                  $stmt->execute();
-                  $stmt->bind_result($Transfers);
-                  $stmt->fetch();
-                  $stmt->close();
-                  echo $Transfers;
-                  ?>,
-              name: "Transfers",
-              exploded: true
-            }
+          {
+            y: <?php
+            //return total number of transactions under  Deposits
+            $result = "SELECT count(*) FROM transactions WHERE  tr_type ='Transfer' ";
+            $stmt = $mysqli->prepare($result);
+            $stmt->execute();
+            $stmt->bind_result($Transfers);
+            $stmt->fetch();
+            $stmt->close();
+            echo $Transfers;
+            ?>,
+            name: "Transfers",
+            exploded: true
+          }
 
           ]
         }]
@@ -659,7 +660,7 @@ $stmt->close();
     }
 
     function explodePie(e) {
-      if (typeof(e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
+      if (typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
         e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
       } else {
         e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;

@@ -1,35 +1,20 @@
 <?php
 session_start();
-include('../conf/config.php');
+include '../conf/config.php';
 
-include('conf/checklogin.php');
+include 'conf/checklogin.php';
 check_login();
 $client_id = $_SESSION['client_id'];
 
 if (isset($_POST['withdrawal'])) {
     $tr_code = $_POST['tr_code'];
     $account_id = $_GET['account_id'];
-    $acc_name = $_POST['acc_name'];
-    $account_number = $_GET['account_number'];
-    $acc_type = $_POST['acc_type'];
-    //$acc_amount  = $_POST['acc_amount'];
-    $tr_type  = $_POST['tr_type'];
+    $tr_type = $_POST['tr_type'];
     $tr_status = $_POST['tr_status'];
-    $client_id  = $_GET['client_id'];
-    $client_name  = $_POST['client_name'];
-    $client_national_id  = $_POST['client_national_id'];
-    $transaction_amt = $_POST['transaction_amt'];
-    $client_phone = $_POST['client_phone'];
-    //$acc_new_amt = $_POST['acc_new_amt'];
-    //$notification_details = $_POST['notification_details'];
-    $notification_details = "$client_name Has Withdrawn $ $transaction_amt From Bank Account $account_number";
+    $phone = $_POST['phone'];
+    $sacco_id = $_POST['sacco_id'];
 
-    /*
-    * The below code will handle the withdrwawal process that is first it 
-      checks if the selected back account has the any amount and secondly the money withdrawed should 
-      no be be greater than the existing amount.
-    *   
-    */
+    $transaction_amt = $_POST['transaction_amt'];
 
     $result = "SELECT SUM(transaction_amt) FROM  transactions  WHERE account_id=?";
     $stmt = $mysqli->prepare($result);
@@ -39,84 +24,68 @@ if (isset($_POST['withdrawal'])) {
     $stmt->fetch();
     $stmt->close();
 
-
     if ($transaction_amt > $amt) {
-        $err = "You Do Not Have Sufficient Funds In Your Account.Your Existing Amount is $ $amt";
+        $err = "You Do Not Have Sufficient Funds In Your Account.Your Existing Amount is $amt";
     } else {
-
-
+        withdrawal($transaction_amt, $phone);
         //Insert Captured information to a database table
-        $query = "INSERT INTO transactions (tr_code, account_id, acc_name, account_number, acc_type,  tr_type, tr_status, client_id, client_name, client_national_id, transaction_amt, client_phone) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-        $notification = "INSERT INTO  notifications (notification_details) VALUES (?)";
+        $query = "INSERT INTO transactions (tr_code, account_id, tr_type, tr_status, transaction_amt, phone,sacco_id,client_id) VALUES (?,?,?,?,?,?,?,?)";
         $stmt = $mysqli->prepare($query);
-        $notification_stmt = $mysqli->prepare($notification);
-        //bind paramaters
-        $rc = $stmt->bind_param('ssssssssssss', $tr_code, $account_id, $acc_name, $account_number, $acc_type, $tr_type, $tr_status, $client_id, $client_name, $client_national_id, $transaction_amt, $client_phone);
-        $rc = $notification_stmt->bind_param('s', $notification_details);
-        $stmt->execute();
-        $notification_stmt->execute();
+        $stmt->execute([$tr_code, $account_id, $tr_type, $tr_status, $transaction_amt, $phone, $sacco_id, $_GET['client_id']]);
         //declare a varible which will be passed to alert function
-        if ($stmt && $notification_stmt) {
+        if ($stmt) {
             $success = "Funds Withdrawled";
         } else {
             $err = "Please Try Again Or Try Later";
         }
-
-        /*
-    if(isset($_POST['deposit']))
-    {
-       $account_id = $_GET['account_id'];
-       $acc_amount = $_POST['acc_amount'];
-        
-        //Insert Captured information to a database table
-        $query="UPDATE  bankaccounts SET acc_amount=? WHERE account_id=?";
-        $stmt = $mysqli->prepare($query);
-        //bind paramaters
-        $rc=$stmt->bind_param('si', $acc_amount, $account_id);
-        $stmt->execute();
-
-        //declare a varible which will be passed to alert function
-        if($stmt )
-        {
-            $success = "Money Deposited";
-        }
-        else
-        {
-            $err = "Please Try Again Or Try Later";
-        }   
-    }   
-    */
     }
 }
 ?>
 <!DOCTYPE html>
 <html>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<?php include("dist/_partials/head.php"); ?>
+<?php include "dist/_partials/head.php";?>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
     <div class="wrapper">
         <!-- Navbar -->
-        <?php include("dist/_partials/nav.php"); ?>
+        <?php include "dist/_partials/nav.php";?>
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <?php include("dist/_partials/sidebar.php"); ?>
+        <?php include "dist/_partials/sidebar.php";?>
 
         <!-- Content Wrapper. Contains page content -->
         <?php
-        $account_id = $_GET['account_id'];
-        $ret = "SELECT * FROM  bankaccounts WHERE account_id = ? ";
-        $stmt = $mysqli->prepare($ret);
-        $stmt->bind_param('i', $account_id);
-        $stmt->execute(); //ok
-        $res = $stmt->get_result();
-        $cnt = 1;
-        while ($row = $res->fetch_object()) {
+$account_id = $_GET['account_id'];
+$ret = "SELECT * FROM  bankaccounts WHERE account_id = ? ";
+$stmt = $mysqli->prepare($ret);
+$stmt->bind_param('i', $account_id);
+$stmt->execute(); //ok
+$res = $stmt->get_result();
+$cnt = 1;
+while ($row = $res->fetch_object()) {
 
+    $stmt2 = $mysqli->prepare("SELECT * FROM  acc_types WHERE acctype_id = $row->acc_type");
+    $stmt2->execute(); //ok
+    $res2 = $stmt2->get_result();
+    while ($data = $res2->fetch_object()) {
+        $rate = $data->rate;
+        $acc_type = $data->name;
+    }
 
+    $stmt3 = $mysqli->prepare("SELECT * FROM  clients WHERE client_id = $row->client_id");
+    $stmt3->execute(); //ok
+    $res3 = $stmt3->get_result();
+    while ($data3 = $res3->fetch_object()) {
+        $name = $data3->name;
+        $national_id = $data3->national_id;
+        $phone = $data3->phone;
+        $sacco_id = $data3->sacco_id;
 
-        ?>
+    }
+
+    ?>
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
@@ -155,18 +124,17 @@ if (isset($_POST['withdrawal'])) {
                                             <div class="row">
                                                 <div class=" col-md-4 form-group">
                                                     <label for="exampleInputEmail1">Client Name</label>
-                                                    <input type="text" readonly name="client_name" value="<?php echo $row->client_name; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly name="client_name" value="<?php echo $name; ?>" required class="form-control" id="exampleInputEmail1">
                                                 </div>
                                                 <div class=" col-md-4 form-group">
                                                     <label for="exampleInputPassword1">Client National ID No.</label>
-                                                    <input type="text" readonly value="<?php echo $row->client_national_id; ?>" name="client_national_id" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly value="<?php echo $national_id; ?>" name="client_national_id" required class="form-control" id="exampleInputEmail1">
                                                 </div>
                                                 <div class=" col-md-4 form-group">
                                                     <label for="exampleInputEmail1">Client Phone Number</label>
-                                                    <input type="text" readonly name="client_phone" value="<?php echo $row->client_phone; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly name="client_phone" value="<?php echo $phone; ?>" required class="form-control" id="exampleInputEmail1">
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class=" col-md-4 form-group">
                                                     <label for="exampleInputEmail1">Account Name</label>
@@ -178,25 +146,42 @@ if (isset($_POST['withdrawal'])) {
                                                 </div>
                                                 <div class=" col-md-4 form-group">
                                                     <label for="exampleInputEmail1">Account Type | Category</label>
-                                                    <input type="text" readonly name="acc_type" value="<?php echo $row->acc_type; ?>" required class="form-control" id="exampleInputEmail1">
+                                                    <input type="text" readonly name="acc_type" value="<?php echo $acc_type; ?>" required class="form-control" id="exampleInputEmail1">
                                                 </div>
                                             </div>
 
                                             <div class="row">
-                                                <div class=" col-md-6 form-group">
+                                                <div class=" col-md-4 form-group d-none">
                                                     <label for="exampleInputEmail1">Transaction Code</label>
                                                     <?php
-                                                    //PHP function to generate random account number
-                                                    $length = 20;
-                                                    $_transcode =  substr(str_shuffle('0123456789QWERgfdsazxcvbnTYUIOqwertyuioplkjhmPASDFGHJKLMNBVCXZ'), 1, $length);
-                                                    ?>
+                                                        //PHP function to generate random account number
+                                                            $length = 20;
+                                                            $_transcode = substr(str_shuffle('0123456789QWERgfdsazxcvbnTYUIOqwertyuioplkjhmPASDFGHJKLMNBVCXZ'), 1, $length);
+                                                            ?>
                                                     <input type="text" name="tr_code" readonly value="<?php echo $_transcode; ?>" required class="form-control" id="exampleInputEmail1">
                                                 </div>
-
-                                                <div class=" col-md-6 form-group">
-                                                    <label for="exampleInputPassword1">Amount Withdraw </label>
-                                                    <input type="text" name="transaction_amt" required class="form-control" id="exampleInputEmail1">
+                                                <div class="col-md-4 form-group">
+                                                    <label for="exampleInputEmail1">Deposit through</label> <br />
+                                                    <input type="radio" name="type" disabled checked
+                                                        value="mobile" required class=""
+                                                        id="exampleInputEmail1">Mobile Money
+                                                    <input type="radio" name="type" disabled
+                                                        value="mobile" required class=""
+                                                        id="exampleInputEmail1">Bank of Kigali
+                                                    <input type="radio" name="type" disabled
+                                                        value="mobile" required class=""
+                                                        id="exampleInputEmail1">Equity Bank
                                                 </div>
+                                                
+                                                <div class=" col-md-4 form-group">
+                                                    <label for="exampleInputPassword1">Amount Withdraw </label>
+                                                    <input type="number" min="1" name="transaction_amt" required class="form-control" id="exampleInputEmail1">
+                                                </div>
+                                                <div class=" col-md-4 form-group">
+                                                    <label for="exampleInputEmail1">Phone Number</label>
+                                                    <input type="number" name="phone" value="" required class="form-control" id="exampleInputEmail1">
+                                                </div>
+
                                                 <div class=" col-md-4 form-group" style="display:none">
                                                     <label for="exampleInputPassword1">Transaction Type</label>
                                                     <input type="text" name="tr_type" value="Withdrawal" required class="form-control" id="exampleInputEmail1">
@@ -204,6 +189,8 @@ if (isset($_POST['withdrawal'])) {
                                                 <div class=" col-md-4 form-group" style="display:none">
                                                     <label for="exampleInputPassword1">Transaction Status</label>
                                                     <input type="text" name="tr_status" value="Success " required class="form-control" id="exampleInputEmail1">
+                                                    <input type="hidden" name="sacco_id" value="<?=$sacco_id?>" />
+
                                                 </div>
 
                                             </div>
@@ -220,9 +207,9 @@ if (isset($_POST['withdrawal'])) {
                 </section>
                 <!-- /.content -->
             </div>
-        <?php } ?>
+        <?php }?>
         <!-- /.content-wrapper -->
-        <?php include("dist/_partials/footer.php"); ?>
+        <?php include "dist/_partials/footer.php";?>
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">

@@ -71,7 +71,7 @@ while ($row = $res->fetch_object()) {
                   <tbody>
                     <?php
                     //fetch all iB_Accs
-                    $ret = "SELECT * FROM  bankaccounts  WHERE sacco_id = ?";
+                    $ret = "SELECT * FROM  bankaccounts WHERE acc_status = 'Active' AND sacco_id = ?";
                     $stmt = $mysqli->prepare($ret);
                     $stmt->execute([$staff_sacco]); //ok
                     $res = $stmt->get_result();
@@ -98,7 +98,7 @@ while ($row = $res->fetch_object()) {
                           <?php echo $row->acc_name; ?>
                         </td>
                         <td>
-                          <?php echo $row->account_number; ?>
+                          <?php echo  $row->account_id . $row->account_number; ?>
                         </td>
                         <td>
                           <?php echo $rate; ?>%

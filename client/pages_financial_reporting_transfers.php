@@ -81,23 +81,31 @@ $client_id = $_SESSION['client_id'];
                             */
                       $transTstamp = $row->created_at;
                       //Perfom some lil magic here
-                      if ($row->tr_type == 'Deposit') {
-                        $alertClass = "<span class='badge badge-success'>$row->tr_type</span>";
-                      } elseif ($row->tr_type == 'Withdrawal') {
-                        $alertClass = "<span class='badge badge-danger'>$row->tr_type</span>";
-                      } else {
-                        $alertClass = "<span class='badge badge-warning'>$row->tr_type</span>";
+                      $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id =? ");
+                      $stmt2->execute([$row->account_id]); //ok
+                      $resul = $stmt2->get_result();
+                      while ($row1 = $resul->fetch_object()) {
+                        $acc = $row1->account_number;
+                        $accId = $row1->account_id;
+                        $holder = $row1->acc_name;
                       }
                     ?>
 
                       <tr>
-                        <td><?php echo $cnt; ?></td>
+                      <td><?php echo $cnt; ?></td>
                         <td><?php echo $row->tr_code; ?></a></td>
-                        <td><?php echo $row->account_number; ?></td>
-                        <td>$ <?php echo $row->transaction_amt; ?></td>
-                        <td><?php echo $row->client_name; ?></td>
-                        <td><?php echo $row->receiving_acc_no; ?></td>
-                        <td><?php echo $row->receiving_acc_holder; ?></td>
+                        <td><?php echo $accId . $acc; ?></td>
+                        <td><?php echo $row->transaction_amt; ?></td>
+                        <td><?php echo $holder; ?></td>
+                        <td><?php echo $row->receiving_acc_id; ?></td>
+                        <td><?php 
+                          $stmt3 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_number =? ");
+                          $stmt3->execute([$row->receiving_acc_id]); //ok
+                          $resul1 = $stmt3->get_result();
+                          while ($row2 = $resul1->fetch_object()) {
+                            echo $row2->acc_name;
+                          }
+                        ?></td>
                         <td><?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?></td>
                       </tr>
                     <?php $cnt = $cnt + 1;

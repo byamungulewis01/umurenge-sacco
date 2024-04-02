@@ -66,7 +66,7 @@ if (isset($_GET['RollBack_Transaction'])) {
                 <h3 class="card-title">Select on any action options to manage Transactions</h3>
               </div>
               <div class="card-body">
-                <table id="example1" class="table table-hover table-striped">
+              <table id="example1" class="table table-hover table-bordered table-striped">
                   <thead>
                     <tr>
                       <th>#</th>
@@ -76,42 +76,55 @@ if (isset($_GET['RollBack_Transaction'])) {
                       <th>Amount</th>
                       <th>Acc. Owner</th>
                       <th>Timestamp</th>
+
                     </tr>
                   </thead>
-                  <tbody><!-- Log on to alphacodecamp.com.ng for more projects! -->
+                  <tbody>
                     <?php
                     //Get latest transactions 
-                    $client_id = $_SESSION['client_id'];
-                    $ret = "SELECT * FROM `transactions` WHERE client_id =? ORDER BY `transactions`.`created_at` DESC ";
+                    $ret = "SELECT * FROM `transactions` WHERE client_id = ? ORDER BY `transactions`.`created_at` DESC ";
                     $stmt = $mysqli->prepare($ret);
-                    $stmt->bind_param('i', $client_id);
-                    $stmt->execute(); //ok
+                    $stmt->execute([$client_id]); //ok
                     $res = $stmt->get_result();
                     $cnt = 1;
                     while ($row = $res->fetch_object()) {
                       /* Trim Transaction Timestamp to 
                             *  User Uderstandable Formart  DD-MM-YYYY :
                             */
+
+                            $stmt2 = $mysqli->prepare("SELECT * FROM  bankaccounts WHERE account_id =? ");
+                            $stmt2->execute([$row->account_id]); //ok
+                            $resul = $stmt2->get_result();
+                            while ($row1 = $resul->fetch_object()) {
+                                $acc = $row1->account_number;
+                                $holder = $row1->acc_name;
+                            }
+
+
                       $transTstamp = $row->created_at;
                       //Perfom some lil magic here
                       if ($row->tr_type == 'Deposit') {
                         $alertClass = "<span class='badge badge-success'>$row->tr_type</span>";
                       } elseif ($row->tr_type == 'Withdrawal') {
                         $alertClass = "<span class='badge badge-danger'>$row->tr_type</span>";
+                      }elseif ($row->tr_type == 'Loan') {
+                        $alertClass = "<span class='badge badge-info'>$row->tr_type</span>";
                       } else {
                         $alertClass = "<span class='badge badge-warning'>$row->tr_type</span>";
                       }
+
+                    
+
                     ?>
 
                       <tr>
                         <td><?php echo $cnt; ?></td>
                         <td><?php echo $row->tr_code; ?></a></td>
-                        <td><?php echo $row->account_number; ?></td>
+                        <td><?php echo $acc; ?></td>
                         <td><?php echo $alertClass; ?></td>
-                        <td>$ <?php echo $row->transaction_amt; ?></td>
-                        <td><?php echo $row->client_name; ?></td>
+                        <td><?php echo $row->transaction_amt; ?></td>
+                        <td><?php echo $holder; ?></td>
                         <td><?php echo date("d-M-Y h:m:s ", strtotime($transTstamp)); ?></td>
-
                       </tr>
                     <?php $cnt = $cnt + 1;
                     } ?>

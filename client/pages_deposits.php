@@ -64,7 +64,7 @@ $client_id = $_SESSION['client_id'];
                   </thead>
                   <tbody>
                     <?php
-                    //fetch all iB_Accs
+                    //fetch all iB_Accsv
                     $client_id = $_SESSION['client_id'];
                     $ret = "SELECT * FROM  bankaccounts  WHERE acc_status = 'Active' AND client_id = ?";
                     $stmt = $mysqli->prepare($ret);
